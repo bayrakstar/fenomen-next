@@ -741,58 +741,121 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
   .huni{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:820px){
+  /* --- telefonda daha az element, daha çok boşluk --- */
   .ustbar,.ustbar.sabit,body.ic-sayfa .ustbar{padding:12px 20px}
   .ustbar-menu{display:none}
   .ustbar-sag{gap:8px}
   .menu-tus{display:block}
   .mini-btn{padding:10px 18px;font-size:12px}
 
-  .bolum{padding:74px 0}
-  .kap,.kap-dar{padding:0 20px}
-  .kartlar{padding:80px 0 72px}
+  .kap,.kap-dar{padding:0 22px}
+  .bolum{padding:78px 0}
+  .kartlar{padding:78px 0}
+  .bolum-bas{margin-bottom:34px;max-width:none}
+  .bolum-bas h2{font-size:clamp(27px,7.4vw,34px);line-height:1.04}
+  .bolum-bas p{font-size:16px;margin-top:16px}
+  .etiket{font-size:10.5px;letter-spacing:.2em}
 
+  /* hero: tek çağrı, kısa nefes */
   .hero{min-height:560px}
-  .hero-icerik{padding:0 20px 104px}
-  .hero-baslik{font-size:clamp(38px,10.5vw,60px);max-width:none}
-  .hero-alt{font-size:16px;margin-top:20px}
-  .hero-eylem{flex-direction:column;align-items:stretch;gap:11px;margin-top:30px}
-  .hero-nokta{margin-top:26px}
-  .hero-nokta button{width:28px}
-  .hero-nokta button.aktif{width:44px}
-  .sayac-ic{gap:6px 20px;font-size:12px;padding:13px 20px}
-  .sayac-ic strong{font-size:13.5px;margin-right:6px}
+  .hero-icerik{padding:0 22px 92px}
+  .hero-ustyazi{margin-bottom:16px;font-size:10.5px;letter-spacing:.2em}
+  .hero-ustyazi::before{width:24px}
+  .hero-baslik{font-size:clamp(36px,10.2vw,54px);line-height:1;max-width:none}
+  .hero-alt{font-size:15.5px;margin-top:16px;line-height:1.55;
+            display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .hero-eylem{flex-direction:column;align-items:stretch;gap:6px;margin-top:26px}
+  .buyuk-btn{width:100%;padding:18px 26px;font-size:14px}
+  /* ikinci eylem butondan çok bağlantı gibi dursun */
+  .hero-eylem .hayalet-btn{
+    border:none;background:none;padding:12px 0;font-size:13px;
+    letter-spacing:.1em;color:rgba(255,255,255,.72);
+  }
+  .hero-nokta{margin-top:22px}
+  .hero-nokta button{width:24px;height:2.5px}
+  .hero-nokta button.aktif{width:40px}
 
-  .ic-bas{padding-top:calc(var(--ust) + 44px)}
-  .ic-bas .giris{font-size:17px;padding-bottom:48px}
-  .bolum-bas{margin-bottom:40px}
-  .bolum-bas p{font-size:16.5px}
+  /* alt şerit: telefonda tek satır, yalnızca son gün */
+  .sayac-ic{padding:13px 22px;font-size:12.5px;gap:0}
+  .sayac-ic > div{display:none}
+  .sayac-ic > div:nth-child(2){display:block}
+  .sayac-ic strong{font-size:13.5px;margin-right:7px}
 
-  .juri-izgara{grid-template-columns:1fr;gap:30px}
+  /* kartlar tek sütun */
+  .kart-izgara{grid-template-columns:1fr;gap:12px;margin-top:34px}
+  .kart{padding:26px 24px 24px;border-radius:15px}
+  .kart-no{margin-bottom:16px}
+  .kart h3{font-size:22px;margin-bottom:8px}
+  .kart p{font-size:15px}
+  .kart-git{padding-top:18px;font-size:11.5px}
+
+  /* çağrı bloğu */
+  .cagri{padding:86px 0 90px}
+  .cagri h2{font-size:clamp(46px,15vw,68px);margin-top:16px}
+  .cagri p{font-size:16px;margin-top:20px}
+  .cagri-btn{width:100%;justify-content:center;padding:19px 24px;font-size:14px;margin-top:30px}
+  .cagri-not{font-size:13px;margin-top:18px}
+
+  /* iç sayfa başlığı */
+  .ic-bas{padding-top:calc(var(--ust) + 40px)}
+  .ic-bas h1{font-size:clamp(32px,8.6vw,46px);line-height:1.02;max-width:none}
+  .ic-bas .giris{font-size:16.5px;padding-bottom:44px;margin-top:20px}
+  .geri{margin-bottom:24px;font-size:11px}
+
+  /* listeler */
+  .faz{grid-template-columns:1fr;gap:8px;padding:24px 0}
+  .faz-no{font-size:22px}
+  .faz-ic h3{font-size:20px}
+  .faz-ic p{font-size:15px}
+  .kutu-izgara,.kutu-izgara.dort{grid-template-columns:1fr;gap:10px}
+  .kutu{padding:24px 22px;border-radius:14px}
+  .kutu h4{font-size:17.5px}
+  .kutu p{font-size:14.5px}
+  .rozet{font-size:13.5px;padding:8px 15px}
+  .yol-satir{grid-template-columns:1fr;gap:4px;padding:20px 0}
+  .yol-ad{font-size:20px}
+  .yol-not{text-align:left;max-width:none;font-size:14.5px}
+
+  /* jüri */
+  .juri-izgara{grid-template-columns:1fr;gap:34px}
   .juri-kart,.juri-kart:nth-child(4){grid-column:auto}
-  .faz{grid-template-columns:1fr;gap:10px;padding:26px 0}
-  .faz-no{font-size:26px}
-  .kutu-izgara,.kutu-izgara.dort{grid-template-columns:1fr;gap:12px}
-  .kutu{padding:26px 22px}
-  .yol-satir{grid-template-columns:1fr;gap:5px;padding:22px 0}
-  .yol-not{text-align:left;max-width:none}
+  .juri-bilgi{padding-top:15px}
+  .juri-bilgi h3{font-size:20px}
+  .juri-bilgi p{font-size:14.5px}
+  .juri-not{margin-top:40px;font-size:13.5px}
 
-  .cagri{padding:80px 0 88px}
-  .cagri p{font-size:16.5px}
-  .cagri-btn{width:100%;justify-content:center;padding:20px 28px;font-size:15px}
+  /* sorular: kesik önizleme satırları telefonda gürültü yapıyor */
+  .sss-onizleme{display:none}
+  .sss-bas{padding:20px 0;grid-template-columns:1fr 30px;gap:14px}
+  .sss-bas h3{font-size:16.5px;line-height:1.4;margin-bottom:0}
+  .sss-arti{width:30px;height:30px}
+  .sss-arti::before{width:11px}
+  .sss-arti::after{height:11px}
+  .sss-govde-ic{padding:0 0 24px}
+  .sss-govde p{font-size:15.5px}
 
-  .form-sar{padding:32px 22px 30px;border-radius:16px}
+  /* form */
+  .form-sar{padding:30px 20px 28px;border-radius:16px}
   .form-ikili{grid-template-columns:1fr;gap:0}
-  .form-ikili .form-grup{margin-bottom:24px}
-  .servis-izgara{grid-template-columns:1fr}
-  .yol-sec{flex-direction:column}
-  .sss-govde-ic{padding-right:0}
-  .sss-bas{padding:22px 0 19px}
+  .form-ikili .form-grup{margin-bottom:22px}
+  .servis-izgara{grid-template-columns:1fr;gap:9px}
+  .servis{padding:14px 16px}
+  .bolum-ayrac{margin:32px 0 22px}
 
-  .modal{padding:32px 24px 26px;border-radius:16px}
-  .alt{padding:56px 0 30px}
-  .alt-ust{padding-bottom:32px}
-  .alt-logo{height:34px}
-  .alt-orta{gap:14px 24px;font-size:14px}
+  .modal{padding:30px 22px 24px;border-radius:16px}
+  .modal h3{font-size:22px}
+
+  /* alt bilgi */
+  .alt{padding:56px 0 28px}
+  .alt-ust{padding-bottom:28px;gap:26px}
+  .alt-slogan{font-size:23px;max-width:none;line-height:1.12}
+  .alt-logo{height:30px}
+  .alt-orta{gap:12px 22px;padding:22px 0;font-size:14px}
+  .alt-alt{font-size:12px;padding-top:18px}
+
+  /* telefonda hareket mesafesi kısa olsun — daha akıcı */
+  .belir{transform:translateY(16px);transition-duration:.65s}
+  .yaz > span{transition-duration:.75s}
 }
 @media(max-width:420px){
   .mobil-menu a{font-size:28px}
