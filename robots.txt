@@ -1,0 +1,3 @@
+# Ön izleme dönemi — kadro kesinleşene kadar dizine eklenmesin
+User-agent: *
+Disallow: /
