@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Başvuru — Radyo Fenomen Next</title>
+<meta name="description" content="Radyo Fenomen Next başvuru formu. 60 saniyelik kaydınızı yükleyin ya da transfer linkiyle gönderin.">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="assets/favicon-512.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#FAF7F4">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Radyo Fenomen Next">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="Başvuru — Radyo Fenomen Next">
+<meta property="og:description" content="Başvuru formu. Kaydınızı yükleyin ya da transfer linkiyle gönderin.">
+<meta property="og:url" content="https://bayrakstar.github.io/fenomen-next/basvuru.html">
+<meta property="og:image" content="https://bayrakstar.github.io/fenomen-next/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://bayrakstar.github.io/fenomen-next/basvuru.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="ic-sayfa">
+
+<header class="ustbar" id="ustbar">
+  <a href="index.html" aria-label="Radyo Fenomen Next">
+    <img src="assets/fenomen-logo-beyaz.png" alt="Radyo Fenomen Next" class="ustbar-logo logo-beyaz">
+    <img src="assets/fenomen-logo.png" alt="Radyo Fenomen Next" class="ustbar-logo logo-siyah">
+  </a>
+  <div class="ustbar-sag">
+    <nav class="ustbar-menu">
+      <a href="program.html">Program</a>
+      <a href="juri.html">Jüri</a>
+      <a href="takvim.html">Takvim</a>
+      <a href="odul.html">Ödül</a>
+      <a href="index.html#sorular">Sorular</a>
+    </nav>
+    <a href="basvuru.html" class="mini-btn">Başvur</a>
+    <button class="menu-tus" id="menuTus" aria-label="Menü"><i></i><i></i><i></i></button>
+  </div>
+</header>
+
+<nav class="mobil-menu" id="mobilMenu">
+  <a href="program.html">Program</a>
+  <a href="juri.html">Jüri</a>
+  <a href="takvim.html">Takvim</a>
+  <a href="odul.html">Ödül</a>
+  <a href="index.html#sorular">Sorular</a>
+  <a href="basvuru.html" class="bu-sayfa">Başvuru</a>
+  <a href="mailto:next@radyofenomen.com" class="menu-alt">next@radyofenomen.com</a>
+</nav>
+
+<section class="ic-bas">
+  <div class="kap">
+    <a href="index.html" class="geri"><span>←</span> Ana sayfa</a>
+    <div class="etiket belir">Başvuru · Son gün 31 Ekim</div>
+    <h1 class="yaz"><span>Başvuru <em>formu</em></span></h1>
+    <p class="giris belir" style="--gec:120ms">Form birkaç dakikada doldurulur. Videonun siteye yüklenmesi zorunlu değildir; WeTransfer, SwissTransfer, SendGB veya Google Drive üzerinden link gönderilebilir.</p>
+  </div>
+</section>
+
+<section class="bolum" style="padding-top:64px">
+  <div class="kap-dar">
+    <div class="form-sar belir">
+      <form id="basvuruForm" novalidate>
+        <div class="form-adim-bar">
+          <div class="adim-cubuk dolu"><i></i></div>
+          <div class="adim-cubuk"><i></i></div>
+          <div class="adim-cubuk"><i></i></div>
+        </div>
+
+        <div class="bolum-ayrac" style="margin-top:0"><span>Kişisel bilgiler</span></div>
+
+        <div class="form-ikili">
+          <div class="form-grup">
+            <label for="ad">Ad Soyad</label>
+            <input type="text" id="ad" name="ad" required autocomplete="name">
+          </div>
+          <div class="form-grup">
+            <label for="dogum">Doğum tarihi</label>
+            <input type="date" id="dogum" name="dogum" required>
+          </div>
+        </div>
+
+        <div class="form-ikili">
+          <div class="form-grup">
+            <label for="sehir">Şehir</label>
+            <input type="text" id="sehir" name="sehir" required autocomplete="address-level2">
+          </div>
+          <div class="form-grup">
+            <label for="telefon">Telefon</label>
+            <input type="tel" id="telefon" name="telefon" placeholder="05XX XXX XX XX" required autocomplete="tel">
+          </div>
+        </div>
+
+        <div class="form-ikili">
+          <div class="form-grup">
+            <label for="eposta">E-posta</label>
+            <input type="email" id="eposta" name="eposta" required autocomplete="email">
+          </div>
+          <div class="form-grup">
+            <label for="sosyal">Instagram / TikTok <span class="ops">— varsa</span></label>
+            <input type="text" id="sosyal" name="sosyal" placeholder="@kullaniciadi">
+          </div>
+        </div>
+
+        <div class="bolum-ayrac"><span>İki soru</span></div>
+
+        <div class="form-grup">
+          <label for="s1">Kendinizi kısaca tanıtır mısınız?</label>
+          <textarea id="s1" name="s1" maxlength="600" required placeholder="Kim olduğunuzu, neyle ilgilendiğinizi anlatın."></textarea>
+          <div class="sayac-harf"><span data-say="s1">0</span> / 600</div>
+        </div>
+
+        <div class="form-grup">
+          <label for="s2">Programınızın adı ne olurdu?</label>
+          <input type="text" id="s2" name="s2" maxlength="80" required placeholder="Tek satır yeterlidir.">
+        </div>
+
+        <div class="bolum-ayrac"><span>60 saniyelik kaydınız</span></div>
+
+        <div class="yol-sec" id="yolSec">
+          <button type="button" class="aktif" data-yol="link">Link gönder</button>
+          <button type="button" data-yol="dosya">Dosya yükle</button>
+        </div>
+
+        <!-- LİNK YOLU -->
+        <div id="linkYolu">
+          <p class="ipucu" style="margin:0 0 16px">
+            Kaydınızı aşağıdaki servislerden birine yükleyip oluşan linki forma yapıştırın.
+            Servis kutusuna tıkladığınızda nasıl yapılacağı adım adım açılır.
+          </p>
+
+          <div class="servis-izgara">
+            <button type="button" class="servis" data-servis="wetransfer">
+              <span class="servis-logo" style="background:#409FFF">WT</span>
+              <span>
+                <span class="servis-ad">WeTransfer</span>
+                <span class="servis-not">2 GB'a kadar · üyelik gerekmez</span>
+              </span>
+            </button>
+            <button type="button" class="servis" data-servis="swisstransfer">
+              <span class="servis-logo" style="background:#1E40AF">ST</span>
+              <span>
+                <span class="servis-ad">SwissTransfer</span>
+                <span class="servis-not">50 GB'a kadar · üyelik gerekmez</span>
+              </span>
+            </button>
+            <button type="button" class="servis" data-servis="sendgb">
+              <span class="servis-logo" style="background:#2FA84F">SG</span>
+              <span>
+                <span class="servis-ad">SendGB</span>
+                <span class="servis-not">5 GB'a kadar · üyelik gerekmez</span>
+              </span>
+            </button>
+            <button type="button" class="servis" data-servis="drive">
+              <span class="servis-logo" style="background:#E8A200">GD</span>
+              <span>
+                <span class="servis-ad">Google Drive</span>
+                <span class="servis-not">Google hesabı gerekir</span>
+              </span>
+            </button>
+          </div>
+
+          <div class="form-grup" style="margin-bottom:0">
+            <label for="videoLink">Kaydınızın linki</label>
+            <input type="url" id="videoLink" name="videoLink" placeholder="https://…">
+            <p class="ipucu">Linkin paylaşım izni herkese açık olmalıdır. Erişilemeyen linkler değerlendirmeye alınamaz.</p>
+          </div>
+        </div>
+
+        <!-- DOSYA YOLU -->
+        <div id="dosyaYolu" style="display:none">
+          <div class="birak-alan" id="birakAlan">
+            <div class="birak-ikon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+            </div>
+            <strong>Dosyanızı buraya bırakın</strong>
+            <small>veya tıklayarak seçin · video ya da ses · en fazla 500 MB<br>MP4, MOV, M4A, MP3</small>
+            <input type="file" id="dosyaGiris" accept="video/*,audio/*" hidden>
+          </div>
+          <div class="dosya-kart" id="dosyaKart">
+            <div class="dosya-ikon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            </div>
+            <div class="dosya-bilgi">
+              <div class="dosya-ad" id="dosyaAd">—</div>
+              <div class="dosya-boyut" id="dosyaBoyut">—</div>
+              <div class="ilerleme"><i id="ilerlemeCubuk"></i></div>
+            </div>
+            <button type="button" class="dosya-sil" id="dosyaSil" aria-label="Kaldır">&times;</button>
+          </div>
+          <p class="ipucu">Yükleme, form doldurulurken arka planda devam eder. Sayfayı kapatmayın.</p>
+        </div>
+
+        <div class="hata" id="kayitHata">Bir kayıt yüklemeniz veya link göndermeniz gerekiyor.</div>
+
+        <div class="bolum-ayrac"><span>Onaylar</span></div>
+
+        <div class="onay">
+          <input type="checkbox" id="onay1" required>
+          <label for="onay1">Gönderdiğim kaydın Radyo Fenomen Next kapsamında değerlendirilmesini ve program iletişiminde kullanılabilmesini kabul ediyorum.</label>
+        </div>
+        <div class="onay" style="margin-top:14px">
+          <input type="checkbox" id="onay2" required>
+          <label for="onay2"><a href="aydinlatma.html" target="_blank" rel="noopener">Aydınlatma metnini</a> okudum, kişisel verilerimin işlenmesine onay veriyorum.</label>
+        </div>
+
+        <div class="gonder-sar">
+          <button type="submit" class="buyuk-btn gonder-btn" id="gonderBtn">Başvuruyu gönder <span class="ok">→</span></button>
+          <p class="gonder-not">18 yaşından küçük adaylardan veli onayı talep edilir.</p>
+        </div>
+      </form>
+
+      <div class="tesekkur" id="tesekkur">
+        <div class="tik">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <h2>Başvurunuz alındı</h2>
+        <p>E-posta adresinize onay mesajı gönderildi. Kısa listeye kalmanız hâlinde Kasım ayının ilk haftasında sizinle iletişime geçilecektir.</p>
+        <div style="margin-top:30px"><a href="index.html" class="hayalet-btn koyu-metin">Ana sayfaya dön</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVİS MODALI -->
+<div class="perde" id="perde">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalBaslik">
+    <button class="modal-kapat" id="modalKapat" aria-label="Kapat">&times;</button>
+    <div class="modal-logo" id="modalLogo">WT</div>
+    <h3 id="modalBaslik">WeTransfer</h3>
+    <p class="modal-not" id="modalNot"></p>
+    <div id="modalAdimlar"></div>
+    <div class="modal-eylem">
+      <a href="#" target="_blank" rel="noopener" class="buyuk-btn" id="modalGit">Servisi aç <span class="ok">→</span></a>
+      <button type="button" class="hayalet-btn koyu-metin" id="modalTamam">Linki aldım, forma dön</button>
+    </div>
+  </div>
+</div>
+
+<footer class="alt">
+  <div class="kap">
+    <div class="alt-ust">
+      <div class="alt-slogan">Sıradaki Fenomen <em>dışarıda bir yerde.</em></div>
+      <img src="assets/fenomen-logo-beyaz.png" alt="Radyo Fenomen Next" class="alt-logo">
+    </div>
+    <nav class="alt-orta">
+      <a href="program.html">Program</a>
+      <a href="juri.html">Jüri</a>
+      <a href="takvim.html">Takvim</a>
+      <a href="odul.html">Ödül</a>
+      <a href="index.html#sorular">Sorular</a>
+      <a href="basvuru.html">Başvuru</a>
+      <a href="aydinlatma.html">Aydınlatma metni</a>
+      <a href="mailto:next@radyofenomen.com">next@radyofenomen.com</a>
+    </nav>
+    <div class="alt-alt">
+      <div>© 2026 Radyo Fenomen Next · Season 01</div>
+      <div>Bayrakstar Medya</div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
+<script src="js/basvuru.js"></script>
+</body>
+</html>
