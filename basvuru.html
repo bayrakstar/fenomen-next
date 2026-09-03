@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Başvuru — Radyo Fenomen Next</title>
-<meta name="description" content="Radyo Fenomen Next başvuru formu. 60 saniyelik kaydınızı yükleyin ya da transfer linkiyle gönderin.">
+<meta name="description" content="Radyo Fenomen Next başvuru formu. 60 saniyelik kaydınızın linkini gönderin.">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="assets/favicon-512.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="Radyo Fenomen Next">
 <meta property="og:locale" content="tr_TR">
 <meta property="og:title" content="Başvuru — Radyo Fenomen Next">
-<meta property="og:description" content="Başvuru formu. Kaydınızı yükleyin ya da transfer linkiyle gönderin.">
+<meta property="og:description" content="Başvuru formu. 60 saniyelik kaydınızın linkini gönderin.">
 <meta property="og:url" content="https://bayrakstar.github.io/fenomen-next/basvuru.html">
 <meta property="og:image" content="https://bayrakstar.github.io/fenomen-next/assets/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -60,7 +60,7 @@
     <a href="index.html" class="geri"><span>←</span> Ana sayfa</a>
     <div class="etiket belir">Başvuru · Son gün 31 Ekim</div>
     <h1 class="yaz"><span>Başvuru <em>formu</em></span></h1>
-    <p class="giris belir" style="--gec:120ms">Form birkaç dakikada doldurulur. Videonun siteye yüklenmesi zorunlu değildir; WeTransfer, SwissTransfer, SendGB veya Google Drive üzerinden link gönderilebilir.</p>
+    <p class="giris belir" style="--gec:120ms">Form birkaç dakikada doldurulur. Kaydınızı siteye yüklemenize gerek yok; WeTransfer, SwissTransfer, SendGB veya Google Drive üzerinden linkini gönderirsiniz.</p>
   </div>
 </section>
 
@@ -124,81 +124,49 @@
 
         <div class="bolum-ayrac"><span>60 saniyelik kaydınız</span></div>
 
-        <div class="yol-sec" id="yolSec">
-          <button type="button" class="aktif" data-yol="link">Link gönder</button>
-          <button type="button" data-yol="dosya">Dosya yükle</button>
+        <p class="ipucu" style="margin:0 0 18px">
+          Kaydınızı aşağıdaki servislerden birine yükleyip oluşan linki forma yapıştırın.
+          Servis kutusuna tıkladığınızda nasıl yapılacağı adım adım açılır.
+        </p>
+
+        <div class="servis-izgara">
+          <button type="button" class="servis" data-servis="wetransfer">
+            <span class="servis-logo" style="background:#409FFF">WT</span>
+            <span>
+              <span class="servis-ad">WeTransfer</span>
+              <span class="servis-not">2 GB'a kadar · üyelik gerekmez</span>
+            </span>
+          </button>
+          <button type="button" class="servis" data-servis="swisstransfer">
+            <span class="servis-logo" style="background:#1E40AF">ST</span>
+            <span>
+              <span class="servis-ad">SwissTransfer</span>
+              <span class="servis-not">50 GB'a kadar · üyelik gerekmez</span>
+            </span>
+          </button>
+          <button type="button" class="servis" data-servis="sendgb">
+            <span class="servis-logo" style="background:#2FA84F">SG</span>
+            <span>
+              <span class="servis-ad">SendGB</span>
+              <span class="servis-not">5 GB'a kadar · üyelik gerekmez</span>
+            </span>
+          </button>
+          <button type="button" class="servis" data-servis="drive">
+            <span class="servis-logo" style="background:#E8A200">GD</span>
+            <span>
+              <span class="servis-ad">Google Drive</span>
+              <span class="servis-not">Google hesabı gerekir</span>
+            </span>
+          </button>
         </div>
 
-        <!-- LİNK YOLU -->
-        <div id="linkYolu">
-          <p class="ipucu" style="margin:0 0 16px">
-            Kaydınızı aşağıdaki servislerden birine yükleyip oluşan linki forma yapıştırın.
-            Servis kutusuna tıkladığınızda nasıl yapılacağı adım adım açılır.
-          </p>
-
-          <div class="servis-izgara">
-            <button type="button" class="servis" data-servis="wetransfer">
-              <span class="servis-logo" style="background:#409FFF">WT</span>
-              <span>
-                <span class="servis-ad">WeTransfer</span>
-                <span class="servis-not">2 GB'a kadar · üyelik gerekmez</span>
-              </span>
-            </button>
-            <button type="button" class="servis" data-servis="swisstransfer">
-              <span class="servis-logo" style="background:#1E40AF">ST</span>
-              <span>
-                <span class="servis-ad">SwissTransfer</span>
-                <span class="servis-not">50 GB'a kadar · üyelik gerekmez</span>
-              </span>
-            </button>
-            <button type="button" class="servis" data-servis="sendgb">
-              <span class="servis-logo" style="background:#2FA84F">SG</span>
-              <span>
-                <span class="servis-ad">SendGB</span>
-                <span class="servis-not">5 GB'a kadar · üyelik gerekmez</span>
-              </span>
-            </button>
-            <button type="button" class="servis" data-servis="drive">
-              <span class="servis-logo" style="background:#E8A200">GD</span>
-              <span>
-                <span class="servis-ad">Google Drive</span>
-                <span class="servis-not">Google hesabı gerekir</span>
-              </span>
-            </button>
-          </div>
-
-          <div class="form-grup" style="margin-bottom:0">
-            <label for="videoLink">Kaydınızın linki</label>
-            <input type="url" id="videoLink" name="videoLink" placeholder="https://…">
-            <p class="ipucu">Linkin paylaşım izni herkese açık olmalıdır. Erişilemeyen linkler değerlendirmeye alınamaz.</p>
-          </div>
+        <div class="form-grup" style="margin-bottom:0">
+          <label for="videoLink">Kaydınızın linki</label>
+          <input type="url" id="videoLink" name="videoLink" placeholder="https://…" required>
+          <p class="ipucu">Linkin paylaşım izni herkese açık olmalıdır. Erişilemeyen linkler değerlendirmeye alınamaz.</p>
         </div>
 
-        <!-- DOSYA YOLU -->
-        <div id="dosyaYolu" style="display:none">
-          <div class="birak-alan" id="birakAlan">
-            <div class="birak-ikon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
-            </div>
-            <strong>Dosyanızı buraya bırakın</strong>
-            <small>veya tıklayarak seçin · video ya da ses · en fazla 500 MB<br>MP4, MOV, M4A, MP3</small>
-            <input type="file" id="dosyaGiris" accept="video/*,audio/*" hidden>
-          </div>
-          <div class="dosya-kart" id="dosyaKart">
-            <div class="dosya-ikon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-            </div>
-            <div class="dosya-bilgi">
-              <div class="dosya-ad" id="dosyaAd">—</div>
-              <div class="dosya-boyut" id="dosyaBoyut">—</div>
-              <div class="ilerleme"><i id="ilerlemeCubuk"></i></div>
-            </div>
-            <button type="button" class="dosya-sil" id="dosyaSil" aria-label="Kaldır">&times;</button>
-          </div>
-          <p class="ipucu">Yükleme, form doldurulurken arka planda devam eder. Sayfayı kapatmayın.</p>
-        </div>
-
-        <div class="hata" id="kayitHata">Bir kayıt yüklemeniz veya link göndermeniz gerekiyor.</div>
+        <div class="hata" id="kayitHata">Kaydınızın linkini eklemeniz gerekiyor.</div>
 
         <div class="bolum-ayrac"><span>Onaylar</span></div>
 
@@ -222,7 +190,7 @@
           <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
         </div>
         <h2>Başvurunuz alındı</h2>
-        <p>E-posta adresinize onay mesajı gönderildi. Kısa listeye kalmanız hâlinde Kasım ayının ilk haftasında sizinle iletişime geçilecektir.</p>
+        <p>Başvurunuz kaydedildi. Bir sonraki aşamaya geçmeniz hâlinde Kasım ayının ilk haftasında sizinle iletişime geçilecektir.</p>
         <div style="margin-top:30px"><a href="index.html" class="hayalet-btn koyu-metin">Ana sayfaya dön</a></div>
       </div>
     </div>

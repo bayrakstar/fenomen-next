@@ -24,16 +24,24 @@ python3 -m http.server 8000
 
 ## Başvuru formu
 
-Form iki yolla kayıt kabul eder: dosya yükleme (500 MB'a kadar) veya transfer linki
-(WeTransfer, SwissTransfer, SendGB, Google Drive).
+Kayıt siteye yüklenmez: aday videosunu WeTransfer, SwissTransfer, SendGB veya Google Drive'a
+yükler, oluşan linki forma yapıştırır. Her servisin nasıl kullanılacağı formdaki kısayollarda
+adım adım anlatılır.
 
-**Depolama henüz bağlı değil.** `js/basvuru.js` içindeki `AYAR.API_TABAN` boş olduğu sürece
-form demo modda çalışır: yükleme canlandırılır, gönderilen veri yalnızca konsola yazılır.
-Adres tanımlandığında gerçek akış devreye girer:
+Başvurular **Supabase**'e yazılır — `bayrakstar-site` projesi, `fenomen_next_basvurular` tablosu.
+Form doğrudan PostgREST'e `POST` eder; ayrı bir sunucu yok.
 
-1. `POST /yukleme-izni` → imzalı yükleme adresi döner
-2. Dosya tarayıcıdan doğrudan depolamaya `PUT` edilir (sunucudan geçmez)
-3. `POST /basvuru` → form verisi ve kaydın adresi gönderilir
+Sayfadaki publishable anahtar herkese açık olacak şekilde tasarlanmıştır: tablodaki RLS kuralı
+`anon` rolüne yalnızca `INSERT` izni verir. Kayıtları okumak, değiştirmek ve silmek giriş yapmış
+hesaplara açıktır; dışarıdan okuma boş liste döner.
+
+Alan doğrulaması veritabanı seviyesinde de yapılır (e-posta biçimi, uzunluk sınırları,
+`kayit_turu` ve `durum` için izinli değer listesi).
+
+### Başvuruları görmek
+
+Supabase panelinde `fenomen_next_basvurular` tablosu. `durum` alanı değerlendirme için:
+`yeni · incelendi · kisa_liste · finalist · elendi`.
 
 ## Notlar
 

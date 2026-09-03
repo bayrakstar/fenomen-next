@@ -1,11 +1,11 @@
-/* FENOMEN NEXT — başvuru formu */
+/* RADYO FENOMEN NEXT — başvuru formu */
 
-/* ===== AYAR =====
-   API_TABAN boşken form demo modda çalışır: yükleme canlandırılır,
-   gönderim konsola yazılır. Depolama seçilince buraya adres girilir. */
-const AYAR = {
-  API_TABAN: '',
-  MAKS_BOYUT: 500 * 1024 * 1024
+/* Başvurular Supabase'e yazılır. Bu anahtar herkese açık olacak şekilde tasarlanmıştır:
+   tablodaki RLS kuralı anon rolüne yalnızca INSERT izni verir, hiçbir kaydı okutmaz. */
+const VERI = {
+  adres:    'https://bezwdlxombiirihxomnv.supabase.co',
+  anahtar:  'sb_publishable_vRdeq7GR8RblkbUe60SrSw_aFkl6xhe',
+  tablo:    'fenomen_next_basvurular'
 };
 
 /* ---------- TRANSFER SERVİSLERİ ---------- */
@@ -51,11 +51,11 @@ const SERVISLER = {
 (function servisModali(){
   const perde = document.getElementById('perde');
   if (!perde) return;
-  const logo = document.getElementById('modalLogo');
-  const baslik = document.getElementById('modalBaslik');
-  const not = document.getElementById('modalNot');
+  const logo    = document.getElementById('modalLogo');
+  const baslik  = document.getElementById('modalBaslik');
+  const not     = document.getElementById('modalNot');
   const adimlar = document.getElementById('modalAdimlar');
-  const git = document.getElementById('modalGit');
+  const git     = document.getElementById('modalGit');
   const linkAlan = document.getElementById('videoLink');
   let sonOdak = null;
 
@@ -118,110 +118,6 @@ document.querySelectorAll('textarea[maxlength]').forEach(alan => {
   });
 })();
 
-/* ---------- KAYIT: LİNK / DOSYA ---------- */
-const kayit = { dosya:null, url:null, yukleniyor:false };
-
-(function yolSecimi(){
-  document.querySelectorAll('#yolSec button').forEach(b => {
-    b.addEventListener('click', () => {
-      document.querySelectorAll('#yolSec button').forEach(x => x.classList.remove('aktif'));
-      b.classList.add('aktif');
-      const linkMi = b.dataset.yol === 'link';
-      document.getElementById('linkYolu').style.display = linkMi ? '' : 'none';
-      document.getElementById('dosyaYolu').style.display = linkMi ? 'none' : '';
-    });
-  });
-})();
-
-function boyutYaz(b){
-  if (b < 1024*1024) return (b/1024).toFixed(0) + ' KB';
-  return (b/1024/1024).toFixed(1) + ' MB';
-}
-
-(function dosyaYukleme(){
-  const alan = document.getElementById('birakAlan');
-  if (!alan) return;
-  const giris = document.getElementById('dosyaGiris');
-  const kart = document.getElementById('dosyaKart');
-  const adEl = document.getElementById('dosyaAd');
-  const boyutEl = document.getElementById('dosyaBoyut');
-  const cubuk = document.getElementById('ilerlemeCubuk');
-  const hata = document.getElementById('kayitHata');
-
-  alan.addEventListener('click', () => giris.click());
-  ['dragenter','dragover'].forEach(e => alan.addEventListener(e, ev => {
-    ev.preventDefault(); alan.classList.add('uzerinde');
-  }));
-  ['dragleave','drop'].forEach(e => alan.addEventListener(e, ev => {
-    ev.preventDefault(); alan.classList.remove('uzerinde');
-  }));
-  alan.addEventListener('drop', ev => { if (ev.dataTransfer.files[0]) sec(ev.dataTransfer.files[0]); });
-  giris.addEventListener('change', () => { if (giris.files[0]) sec(giris.files[0]); });
-
-  document.getElementById('dosyaSil').addEventListener('click', () => {
-    kayit.dosya = null; kayit.url = null; kayit.yukleniyor = false;
-    giris.value = ''; kart.classList.remove('gorunur');
-    alan.style.display = ''; cubuk.style.width = 0;
-  });
-
-  function sec(dosya){
-    if (dosya.size > AYAR.MAKS_BOYUT){
-      hata.textContent = `Dosya ${boyutYaz(dosya.size)} boyutunda. Yükleme sınırı 500 MB — "Link gönder" seçeneğini kullanabilirsiniz.`;
-      hata.classList.add('gorunur');
-      return;
-    }
-    hata.classList.remove('gorunur');
-    kayit.dosya = dosya;
-    adEl.textContent = dosya.name;
-    boyutEl.textContent = boyutYaz(dosya.size);
-    kart.classList.add('gorunur');
-    alan.style.display = 'none';
-    yukle(dosya);
-  }
-
-  async function yukle(dosya){
-    kayit.yukleniyor = true;
-    if (!AYAR.API_TABAN){
-      let p = 0;
-      const t = setInterval(() => {
-        p = Math.min(100, p + Math.random()*11);
-        cubuk.style.width = p + '%';
-        boyutEl.textContent = boyutYaz(dosya.size) + (p < 100 ? ` · yükleniyor %${p|0}` : ' · yüklendi');
-        if (p >= 100){ clearInterval(t); kayit.yukleniyor = false; kayit.url = 'demo://' + dosya.name; }
-      }, 260);
-      return;
-    }
-    try {
-      const izin = await fetch(AYAR.API_TABAN + '/yukleme-izni', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ad:dosya.name, tur:dosya.type, boyut:dosya.size})
-      }).then(r => r.json());
-
-      await new Promise((tamam, olmadi) => {
-        const x = new XMLHttpRequest();
-        x.open('PUT', izin.yuklemeAdresi);
-        x.setRequestHeader('Content-Type', dosya.type);
-        x.upload.onprogress = e => {
-          const p = e.loaded / e.total * 100;
-          cubuk.style.width = p + '%';
-          boyutEl.textContent = boyutYaz(dosya.size) + ` · yükleniyor %${p|0}`;
-        };
-        x.onload = () => x.status < 300 ? tamam() : olmadi(new Error(x.status));
-        x.onerror = () => olmadi(new Error('ağ'));
-        x.send(dosya);
-      });
-
-      kayit.url = izin.dosyaAdresi;
-      kayit.yukleniyor = false;
-      boyutEl.textContent = boyutYaz(dosya.size) + ' · yüklendi';
-    } catch(e){
-      kayit.yukleniyor = false;
-      hata.textContent = 'Yükleme tamamlanamadı. Tekrar deneyebilir ya da "Link gönder" seçeneğini kullanabilirsiniz.';
-      hata.classList.add('gorunur');
-    }
-  }
-})();
-
 /* ---------- GÖNDERİM ---------- */
 (function gonder(){
   const form = document.getElementById('basvuruForm');
@@ -230,52 +126,57 @@ function boyutYaz(b){
   form.addEventListener('submit', async ev => {
     ev.preventDefault();
     const hata = document.getElementById('kayitHata');
-    const btn = document.getElementById('gonderBtn');
+    const btn  = document.getElementById('gonderBtn');
     const link = document.getElementById('videoLink').value.trim();
 
-    if (!form.checkValidity()){ hata.classList.remove('gorunur'); form.reportValidity(); return; }
+    hata.classList.remove('gorunur');
+    if (!form.checkValidity()){ form.reportValidity(); return; }
 
-    if (!kayit.url && !link){
-      hata.textContent = kayit.yukleniyor
-        ? 'Kaydınız hâlâ yükleniyor, birkaç saniye bekleyin.'
-        : 'Bir kayıt yüklemeniz veya link göndermeniz gerekiyor.';
-      hata.classList.add('gorunur');
-      hata.scrollIntoView({behavior:'smooth', block:'center'});
-      return;
-    }
-    if (link && !/^https?:\/\/.+\..+/.test(link)){
+    if (!/^https?:\/\/.+\..+/.test(link)){
       hata.textContent = 'Link geçerli görünmüyor. Adresin "https://" ile başladığından emin olun.';
       hata.classList.add('gorunur');
       return;
     }
-    hata.classList.remove('gorunur');
 
-    const veri = Object.fromEntries(new FormData(form).entries());
-    veri.kayitAdresi = kayit.url || link;
-    veri.kayitTuru = kayit.url ? 'yukleme' : 'link';
+    const d = new FormData(form);
+    const kayit = {
+      ad:           d.get('ad').trim(),
+      dogum:        d.get('dogum'),
+      sehir:        d.get('sehir').trim(),
+      telefon:      d.get('telefon').trim(),
+      eposta:       d.get('eposta').trim(),
+      sosyal:       (d.get('sosyal') || '').trim() || null,
+      tanitim:      d.get('s1').trim(),
+      program_adi:  d.get('s2').trim(),
+      kayit_adresi: link,
+      kayit_turu:   'link'
+    };
 
     btn.disabled = true;
     btn.innerHTML = 'Gönderiliyor…';
 
     try {
-      if (AYAR.API_TABAN){
-        const c = await fetch(AYAR.API_TABAN + '/basvuru', {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify(veri)
-        });
-        if (!c.ok) throw new Error('sunucu');
-      } else {
-        console.log('DEMO — gönderilecek başvuru:', veri);
-        await new Promise(r => setTimeout(r, 900));
-      }
+      const c = await fetch(`${VERI.adres}/rest/v1/${VERI.tablo}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': VERI.anahtar,
+          'Authorization': 'Bearer ' + VERI.anahtar,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(kayit)
+      });
+      if (!c.ok) throw new Error('HTTP ' + c.status + ' ' + await c.text());
+
       form.style.display = 'none';
       const tesekkur = document.getElementById('tesekkur');
       tesekkur.classList.add('gorunur');
       tesekkur.scrollIntoView({behavior:'smooth', block:'center'});
     } catch(e){
+      console.error('Başvuru gönderilemedi:', e);
       btn.disabled = false;
       btn.innerHTML = 'Başvuruyu gönder <span class="ok">→</span>';
-      hata.textContent = 'Başvuru gönderilemedi. Bağlantınızı kontrol edip tekrar deneyin.';
+      hata.textContent = 'Başvuru gönderilemedi. Bağlantınızı kontrol edip tekrar deneyin. Sorun sürerse next@radyofenomen.com adresine yazın.';
       hata.classList.add('gorunur');
     }
   });
