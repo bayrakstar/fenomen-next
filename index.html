@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Radyo Fenomen Next — Yeni neslin sesini arıyoruz</title>
 <meta name="description" content="Radyo Fenomen Next, yeni nesil yayıncıları keşfetmek için başlatılan talent programıdır. Başvurular 31 Ekim'e kadar açık.">
-<!-- Ön izleme dönemi: jüri isimleri temsilî olduğu sürece arama motorlarına kapalı.
-     Kadro kesinleşince bu satır silinecek. -->
-<meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="assets/favicon-512.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -31,30 +28,31 @@
 <body>
 
 <header class="ustbar" id="ustbar">
-  <a href="index.html" aria-label="Radyo Fenomen Next">
-    <img src="assets/fenomen-logo-beyaz.png" alt="Radyo Fenomen Next" class="ustbar-logo logo-beyaz">
-    <img src="assets/fenomen-logo.png" alt="Radyo Fenomen Next" class="ustbar-logo logo-siyah">
+  <a href="#hero" aria-label="Radyo Fenomen Next">
+    <img src="assets/fenomen-next-logo-beyaz.png" alt="Radyo Fenomen Next" class="ustbar-logo logo-beyaz">
+    <img src="assets/fenomen-next-logo.png" alt="Radyo Fenomen Next" class="ustbar-logo logo-siyah">
   </a>
   <div class="ustbar-sag">
     <nav class="ustbar-menu">
-      <a href="program.html">Program</a>
-      <a href="juri.html">Jüri</a>
-      <a href="takvim.html">Takvim</a>
-      <a href="odul.html">Ödül</a>
+      <a href="#program">Program</a>
+      <a href="#juri">Jüri</a>
+      <a href="#takvim">Takvim</a>
+      <a href="#odul">Ödül</a>
+      <a href="#basvuru">Başvuru</a>
       <a href="#sorular">Sorular</a>
     </nav>
-    <a href="basvuru.html" class="mini-btn">Başvur</a>
+    <a href="#basvuru" class="mini-btn">Başvur</a>
     <button class="menu-tus" id="menuTus" aria-label="Menü"><i></i><i></i><i></i></button>
   </div>
 </header>
 
 <nav class="mobil-menu" id="mobilMenu">
-  <a href="program.html">Program</a>
-  <a href="juri.html">Jüri</a>
-  <a href="takvim.html">Takvim</a>
-  <a href="odul.html">Ödül</a>
+  <a href="#program">Program</a>
+  <a href="#juri">Jüri</a>
+  <a href="#takvim">Takvim</a>
+  <a href="#odul">Ödül</a>
+  <a href="#basvuru">Başvuru</a>
   <a href="#sorular">Sorular</a>
-  <a href="basvuru.html">Başvuru</a>
   <a href="mailto:next@radyofenomen.com" class="menu-alt">next@radyofenomen.com</a>
 </nav>
 
@@ -66,21 +64,21 @@
   <div class="hero-grain"></div>
 
   <div class="hero-icerik">
-    <div class="hero-ustyazi belir gorunur">Radyo Fenomen Next · Season 01</div>
-    <h1 class="hero-baslik yaz gorunur" id="heroBaslik"><span>Yeni neslin<br>sesini <em>arıyoruz</em></span></h1>
-    <p class="hero-alt" id="heroAlt">Radyo Fenomen Next, yeni nesil yayıncıları keşfetmek için başlatılan talent programıdır. Başvurular 31 Ekim'e kadar açıktır.</p>
-    <div class="hero-eylem">
-      <a href="basvuru.html" class="buyuk-btn">Başvuru yap <span class="ok">→</span></a>
-      <a href="program.html" class="hayalet-btn">Programı incele</a>
+    <div class="hero-ustyazi belir" style="--gec:220ms">Season 01 · Son başvuru 31 Ekim</div>
+    <h1 class="hero-baslik yaz" id="heroBaslik" style="--gec:360ms"><span><em>Fenomen</em> kim?</span></h1>
+    <p class="hero-alt belir" id="heroAlt" style="--gec:640ms">Radyo Fenomen Next, yeni nesil yayıncıları keşfetmek için başlatılan talent programı. Deneyim aranmıyor; ses, özgünlük ve enerji aranıyor.</p>
+    <div class="hero-eylem belir" style="--gec:780ms">
+      <a href="#basvuru" class="buyuk-btn">Başvuru yap <span class="ok">→</span></a>
+      <a href="#program" class="hayalet-btn">Programı incele</a>
     </div>
-    <div class="hero-nokta" id="heroNokta">
+    <div class="hero-nokta belir" id="heroNokta" style="--gec:900ms">
       <button class="aktif" data-git="0" aria-label="1. görsel"></button>
       <button data-git="1" aria-label="2. görsel"></button>
       <button data-git="2" aria-label="3. görsel"></button>
     </div>
   </div>
 
-  <div class="hero-sayac">
+  <div class="hero-sayac belir" style="--gec:1020ms">
     <div class="sayac-ic">
       <div><strong>15 Eylül</strong> başvurular açıldı</div>
       <div><strong>31 Ekim</strong> son başvuru</div>
@@ -90,60 +88,393 @@
 </section>
 
 <!-- BAŞVURU ÇAĞRISI -->
-<section class="cagri" id="basvuru">
+<section class="cagri">
   <div class="kap">
     <div class="etiket belir">Son başvuru 31 Ekim</div>
     <h2 class="yaz"><span>Başvuru<br>Yap</span></h2>
     <p class="belir" style="--gec:120ms">Form birkaç dakikada doldurulur. Profesyonel çekim beklenmiyor — telefonla kaydedilmiş 60 saniye yeterli.</p>
-    <a href="basvuru.html" class="cagri-btn belir" style="--gec:200ms">Başvuru formuna git <span>→</span></a>
+    <a href="#basvuru" class="cagri-btn belir" style="--gec:200ms">Başvuru formuna git <span>→</span></a>
     <p class="cagri-not belir" style="--gec:260ms">Kaydınızı siteye yüklemenize gerek yok, linki yeterli.</p>
   </div>
 </section>
 
-<!-- YÖNLENDİRME -->
-<section class="kartlar">
+<!-- PROGRAM -->
+<section class="bolum" id="program">
   <div class="kap">
     <div class="bolum-bas">
-      <div class="etiket belir">Program hakkında</div>
-      <h2 class="yaz"><span>Dört başlıkta<br>program</span></h2>
-      <p class="belir" style="--gec:120ms">Programın işleyişi, jürisi, takvimi ve ödüller ayrı başlıklar altında.</p>
+      <div class="etiket belir">Program</div>
+      <h2 class="yaz"><span>Nasıl <em>işliyor?</em></span></h2>
+      <p class="belir" style="--gec:120ms">Başvuru dönemiyle başlıyor, dört yayıncının yayına çıkmasıyla bitiyor. Aradaki her aşama aşağıda.</p>
     </div>
 
-    <div class="kart-izgara">
-      <a href="program.html" class="kart belir">
-        <div class="kart-no">01</div>
-        <h3>Program</h3>
-        <p>Altı aşama, tarihler ve değerlendirme kriterleri.</p>
-        <div class="kart-git">İncele <span>→</span></div>
-      </a>
-      <a href="juri.html" class="kart belir" style="--gec:80ms">
-        <div class="kart-no">02</div>
-        <h3>Jüri</h3>
-        <p>Radyo, müzik ve yeni medyadan beş isim.</p>
-        <div class="kart-git">İncele <span>→</span></div>
-      </a>
-      <a href="takvim.html" class="kart belir" style="--gec:160ms">
-        <div class="kart-no">03</div>
-        <h3>Takvim</h3>
-        <p>Başvurudan ilk yayına bütün tarihler.</p>
-        <div class="kart-git">İncele <span>→</span></div>
-      </a>
-      <a href="odul.html" class="kart belir" style="--gec:240ms">
-        <div class="kart-no">04</div>
-        <h3>Ödül</h3>
-        <p>Yayın hakkı, eğitim, mentorluk ve ekipman.</p>
-        <div class="kart-git">İncele <span>→</span></div>
-      </a>
+    <div class="faz-liste">
+      <div class="faz belir">
+        <div class="faz-no">01</div>
+        <div class="faz-ic">
+          <span class="faz-sure">15 Eylül – 31 Ekim</span>
+          <h3>Başvuru dönemi</h3>
+          <p>Başvuru formu ve 60 saniyelik kayıt gönderimi bu tarihler arasında açıktır. Başvurular 31 Ekim gece yarısı kapanır.</p>
+        </div>
+      </div>
+      <div class="faz belir">
+        <div class="faz-no">02</div>
+        <div class="faz-ic">
+          <span class="faz-sure">1 – 10 Kasım</span>
+          <h3>Ön eleme</h3>
+          <p>Gönderilen kayıtlar değerlendirme ekibi tarafından incelenir. Bir sonraki aşamaya geçen adaylarla telefonla iletişime geçilir.</p>
+        </div>
+      </div>
+      <div class="faz belir">
+        <div class="faz-no">03</div>
+        <div class="faz-ic">
+          <span class="faz-sure">11 Kasım</span>
+          <h3>Top 20</h3>
+          <p>Challenge Day'e katılmaya hak kazanan yirmi finalist açıklanır. Finalistler program kanallarında ayrı ayrı tanıtılır.</p>
+        </div>
+      </div>
+      <div class="faz belir">
+        <div class="faz-no">04</div>
+        <div class="faz-ic">
+          <span class="faz-sure">28 Kasım</span>
+          <h3>Challenge Day</h3>
+          <p>Finalistler tek gün içinde dört ayrı görevden geçer. Değerlendirme canlı jüri önünde yapılır.</p>
+        </div>
+      </div>
+      <div class="faz belir">
+        <div class="faz-no">05</div>
+        <div class="faz-ic">
+          <span class="faz-sure">1 Aralık</span>
+          <h3>Top 4</h3>
+          <p>Dört kazanan açıklanır. Yayıncılık eğitimi, mentorluk ve yayına hazırlık süreci başlar.</p>
+        </div>
+      </div>
+      <div class="faz belir">
+        <div class="faz-no">06</div>
+        <div class="faz-ic">
+          <span class="faz-sure">Ocak</span>
+          <h3>On Air</h3>
+          <p>Dört yayıncı üç aylık pilot yayın dönemine başlar. Performansa bağlı olarak yayın kalıcı program saatine dönüşür.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEĞERLENDİRME -->
+<section class="bolum acik-2">
+  <div class="kap">
+    <div class="bolum-bas">
+      <div class="etiket belir">Değerlendirme</div>
+      <h2 class="yaz"><span>Nelere<br>bakıyoruz?</span></h2>
+      <p class="belir" style="--gec:120ms">Jürinin gözü sekiz başlıkta. Takipçi sayısı bunlardan biri değil.</p>
+    </div>
+
+    <div>
+      <div class="rozetler">
+        <span class="rozet">Ses ve anlatım</span>
+        <span class="rozet">Özgünlük</span>
+        <span class="rozet">Enerji</span>
+        <span class="rozet">Doğaçlama</span>
+        <span class="rozet">Müzik ve kültür bilgisi</span>
+        <span class="rozet">Sosyal medya yetkinliği</span>
+        <span class="rozet">Kamera performansı</span>
+        <span class="rozet">Topluluk oluşturma potansiyeli</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHALLENGE DAY -->
+<section class="bolum koyu">
+  <div class="kap">
+    <div class="bolum-bas">
+      <div class="etiket belir">Challenge Day · 28 Kasım</div>
+      <h2 class="yaz"><span>Tek gün,<br><em>dört görev</em></span></h2>
+      <p class="belir" style="--gec:120ms">Yirmi finalist, tek gün süren bir programda dört ayrı görevden geçer. Görevlerin içeriği gün başında açıklanır; hazırlık gerektirmez.</p>
+    </div>
+
+    <div class="kutu-izgara dort">
+      <div class="kutu belir"><h4>20 finalist</h4><p>Challenge Day'e katılmaya hak kazanan adaylar.</p></div>
+      <div class="kutu belir" style="--gec:100ms"><h4>4 görev</h4><p>Görevler gün içinde açıklanır, önceden hazırlık gerekmez.</p></div>
+      <div class="kutu belir" style="--gec:200ms"><h4>Canlı jüri</h4><p>Değerlendirme aynı gün, jüri önünde yapılır.</p></div>
+      <div class="kutu belir" style="--gec:300ms"><h4>4 kazanan</h4><p>Gün sonunda dört isim On Air'e çıkmaya hak kazanır.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- JÜRİ -->
+<section class="bolum" id="juri">
+  <div class="kap">
+    <div class="bolum-bas">
+      <div class="etiket belir">Jüri</div>
+      <div class="durum-rozet belir">Yakında sizlerle</div>
+      <h2 class="yaz"><span>Seni <em>beş kişi</em><br>dinleyecek</span></h2>
+      <p class="belir" style="--gec:120ms">Radyo, müzik ve yeni medyadan beş isim. Kadro kesinleştiğinde burada duyurulacak. Aday yalnızca mikrofon başındaki performansıyla değil; müzik bilgisi, sahne duruşu ve dijital dildeki yetkinliğiyle birlikte değerlendiriliyor.</p>
+    </div>
+
+    <div class="juri-bekleyen">
+      <div class="juri-yer belir"><span class="juri-yer-rozet">Radyo</span><span class="juri-yer-cizgi"></span></div>
+      <div class="juri-yer belir" style="--gec:80ms"><span class="juri-yer-rozet">Müzik</span><span class="juri-yer-cizgi"></span></div>
+      <div class="juri-yer belir" style="--gec:160ms"><span class="juri-yer-rozet">Yeni medya</span><span class="juri-yer-cizgi"></span></div>
+      <div class="juri-yer belir" style="--gec:240ms"><span class="juri-yer-rozet">Konuk jüri</span><span class="juri-yer-cizgi"></span></div>
+      <div class="juri-yer belir" style="--gec:320ms"><span class="juri-yer-rozet">Radyo Fenomen Next</span><span class="juri-yer-cizgi"></span></div>
+    </div>
+
+    <p class="juri-not belir">
+      Jüri isimleri Challenge Day öncesinde program kanallarından duyurulur.
+    </p>
+  </div>
+</section>
+
+<!-- TAKVİM -->
+<section class="bolum acik-2" id="takvim">
+  <div class="kap">
+    <div class="bolum-bas">
+      <div class="etiket belir">Takvim</div>
+      <h2 class="yaz"><span>Eylül'den <em>Ocak'a</em></span></h2>
+      <p class="belir" style="--gec:120ms">Tarihlerde değişiklik olması hâlinde bu bölüm güncellenir ve başvuru sahiplerine e-posta ile bilgi verilir.</p>
+    </div>
+
+    <div class="gerisayim">
+      <div><b>31 Ekim</b><span>son başvuru tarihi</span></div>
+      <div><b>11 Kasım</b><span>Top 20 açıklanıyor</span></div>
+      <div><b>28 Kasım</b><span>Challenge Day</span></div>
+    </div>
+
+    <div class="hatirlatma belir">
+      <p>Başvurular 31 Ekim gece yarısı kapanır. Son güne bırakılan gönderimlerde bağlantı kaynaklı sorunlar yaşanabiliyor; kaydı erken iletmeniz önerilir.</p>
+    </div>
+
+    <div class="yol-liste" style="margin-top:56px">
+      <div class="yol-satir"><div class="yol-tarih">15 Eyl – 31 Eki</div><div class="yol-ad">Başvuru dönemi</div><div class="yol-not">Form ve kayıt gönderimi açık. 31 Ekim gece yarısı kapanır.</div></div>
+      <div class="yol-satir"><div class="yol-tarih">1 – 10 Kasım</div><div class="yol-ad">Ön eleme</div><div class="yol-not">Kayıtlar değerlendirilir, sonraki aşamaya geçenler aranır.</div></div>
+      <div class="yol-satir"><div class="yol-tarih">11 Kasım</div><div class="yol-ad">Top 20</div><div class="yol-not">Challenge Day'e kalan yirmi finalist açıklanır.</div></div>
+      <div class="yol-satir"><div class="yol-tarih">28 Kasım</div><div class="yol-ad">Challenge Day</div><div class="yol-not">Tek günlük final programı ve canlı jüri değerlendirmesi.</div></div>
+      <div class="yol-satir"><div class="yol-tarih">1 Aralık</div><div class="yol-ad">Top 4</div><div class="yol-not">Dört kazanan açıklanır, hazırlık süreci başlar.</div></div>
+      <div class="yol-satir"><div class="yol-tarih">Ocak</div><div class="yol-ad">On Air</div><div class="yol-not">Kazananlar üç aylık pilot yayın dönemine başlar.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ÖDÜL -->
+<section class="bolum koyu" id="odul">
+  <div class="kap">
+    <div class="bolum-bas">
+      <div class="etiket belir">Ödül</div>
+      <h2 class="yaz"><span>Ödül, <em>kendi programın</em></span></h2>
+      <p class="belir" style="--gec:120ms">Programın esas ödülü, Radyo Fenomen Next'te yayın yapma hakkıdır. Dört kazanan üç aylık pilot yayın dönemine başlar; performansa bağlı olarak yayın kalıcı bir program saatine dönüşür.</p>
+    </div>
+
+    <div class="kutu-izgara">
+      <div class="kutu belir">
+        <div class="no">01</div>
+        <h4>Radyo Fenomen Next'te yayın hakkı</h4>
+        <p>Üç aylık pilot yayın dönemi. Performansa bağlı olarak kalıcı program saatine dönüşür.</p>
+      </div>
+      <div class="kutu belir" style="--gec:100ms">
+        <div class="no">02</div>
+        <h4>Profesyonel yayıncılık eğitimi</h4>
+        <p>Mikrofon tekniği, nefes ve diksiyon, yayın kurgusu, canlı yayın yönetimi.</p>
+      </div>
+      <div class="kutu belir" style="--gec:200ms">
+        <div class="no">03</div>
+        <h4>Mentorluk</h4>
+        <p>Radyo Fenomen Next ekibinden deneyimli yayıncılarla birebir çalışma programı.</p>
+      </div>
+      <div class="kutu belir" style="--gec:300ms">
+        <div class="no">04</div>
+        <h4>Çekim ve kişisel marka desteği</h4>
+        <p>Profesyonel fotoğraf ve video çekimi, görsel kimlik ve tanıtım içerikleri.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CREATOR STARTER PACK -->
+<section class="bolum">
+  <div class="kap">
+    <div class="bolum-bas">
+      <div class="etiket belir">Creator Starter Pack</div>
+      <h2 class="yaz"><span>Sürpriz hediyeler<br><em>de cabası</em></span></h2>
+      <p class="belir" style="--gec:120ms">Kazanan adaylara, yayın ve içerik üretimine kesintisiz başlayabilmeleri için bir ekipman ve deneyim paketi sağlanır.</p>
+    </div>
+
+    <div>
+      <div class="rozetler">
+        <span class="rozet">Dizüstü bilgisayar</span>
+        <span class="rozet">Akıllı telefon</span>
+        <span class="rozet">Kulaklık</span>
+        <span class="rozet">Hoparlör</span>
+        <span class="rozet">Mikrofon</span>
+        <span class="rozet">Festival ve konser biletleri</span>
+        <span class="rozet">Lifestyle üyelikleri</span>
+        <span class="rozet">Teknoloji paketleri</span>
+      </div>
+      <p style="margin-top:26px;color:var(--murekkep-soft);max-width:60ch">
+        Paket içeriği güncellenebilir. Kesinleşen içerik, Top 4 açıklandığında kazananlarla paylaşılır.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FİNALİSTLER -->
+<section class="bolum acik-2">
+  <div class="kap">
+    <div class="bolum-bas">
+      <div class="etiket belir">Finalistler</div>
+      <h2 class="yaz"><span>Top 20'ye kalan<br><em>her aday</em> kazanır</span></h2>
+      <p class="belir" style="--gec:120ms">Ödül yalnızca dört kazananla sınırlı değildir. Challenge Day'e davet edilen yirmi finalistin tamamı programın görünürlüğünden yararlanır.</p>
+    </div>
+    <div class="kutu-izgara dort">
+      <div class="kutu belir"><h4>Görünürlük senin</h4><p>Her finalist için hazırlanan profil ve video içerikleri yayımlanır.</p></div>
+      <div class="kutu belir" style="--gec:100ms"><h4>Jüriyle aynı masada</h4><p>Finalistler, radyo ve müzik dünyasından jüri üyeleriyle aynı gün bir araya gelir.</p></div>
+      <div class="kutu belir" style="--gec:200ms"><h4>Yol sende dert değil</h4><p>Challenge Day kapsamında İstanbul ulaşımı ve konaklaması karşılanır.</p></div>
+      <div class="kutu belir" style="--gec:300ms"><h4>Gerçek stüdyo, gerçek ekipman</h4><p>Finalistler yayın stüdyosunda gerçek ekipmanla çalışma imkânı bulur.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- BAŞVURU FORMU -->
+<section class="bolum" id="basvuru">
+  <div class="kap">
+    <div class="bolum-bas">
+      <div class="etiket belir">Başvuru · Son gün 31 Ekim</div>
+      <h2 class="yaz"><span>Mikrofon <em>şimdi sende</em></span></h2>
+      <p class="belir" style="--gec:120ms">Form birkaç dakikada doldurulur. Profesyonel çekim beklenmiyor; telefonla kaydedilmiş 60 saniye yeterli. Kaydı siteye yüklemene gerek yok, sadece linkini paylaş.</p>
+    </div>
+  </div>
+
+  <div class="kap-dar">
+    <div class="form-sar belir">
+      <form id="basvuruForm" novalidate>
+        <div class="form-adim-bar">
+          <div class="adim-cubuk dolu"><i></i></div>
+          <div class="adim-cubuk"><i></i></div>
+          <div class="adim-cubuk"><i></i></div>
+        </div>
+
+        <div class="bolum-ayrac" style="margin-top:0"><span>Kişisel bilgiler</span></div>
+
+        <div class="form-ikili">
+          <div class="form-grup">
+            <label for="ad">Ad Soyad</label>
+            <input type="text" id="ad" name="ad" required autocomplete="name">
+          </div>
+          <div class="form-grup">
+            <label for="dogum">Doğum tarihi</label>
+            <input type="date" id="dogum" name="dogum" required>
+          </div>
+        </div>
+
+        <div class="form-ikili">
+          <div class="form-grup">
+            <label for="sehir">Şehir</label>
+            <input type="text" id="sehir" name="sehir" required autocomplete="address-level2">
+          </div>
+          <div class="form-grup">
+            <label for="telefon">Telefon</label>
+            <input type="tel" id="telefon" name="telefon" placeholder="05XX XXX XX XX" required autocomplete="tel">
+          </div>
+        </div>
+
+        <div class="form-ikili">
+          <div class="form-grup">
+            <label for="eposta">E-posta</label>
+            <input type="email" id="eposta" name="eposta" required autocomplete="email">
+          </div>
+          <div class="form-grup">
+            <label for="sosyal">Instagram / TikTok <span class="ops">— varsa</span></label>
+            <input type="text" id="sosyal" name="sosyal" placeholder="@kullaniciadi">
+          </div>
+        </div>
+
+        <div class="bolum-ayrac"><span>İki soru</span></div>
+
+        <div class="form-grup">
+          <label for="s1">Kendinizi kısaca tanıtır mısınız?</label>
+          <textarea id="s1" name="s1" maxlength="600" required placeholder="Kim olduğunuzu, neyle ilgilendiğinizi anlatın."></textarea>
+          <div class="sayac-harf"><span data-say="s1">0</span> / 600</div>
+        </div>
+
+        <div class="form-grup">
+          <label for="s2">Programınızın adı ne olurdu?</label>
+          <input type="text" id="s2" name="s2" maxlength="80" required placeholder="Tek satır yeterlidir.">
+        </div>
+
+        <div class="bolum-ayrac"><span>60 saniyelik kaydınız</span></div>
+
+        <p class="ipucu" style="margin:0 0 18px">
+          Kaydınızı Google Drive'a ya da YouTube'a yükleyip oluşan linki forma yapıştırın.
+          Kutuya tıkladığınızda nasıl yapılacağı adım adım açılır. İkisinde de linkin süresi dolmaz.
+        </p>
+
+        <div class="servis-izgara">
+          <button type="button" class="servis" data-servis="drive">
+            <span class="servis-logo" style="background:#E8A200">GD</span>
+            <span>
+              <span class="servis-ad">Google Drive</span>
+              <span class="servis-not">Süresiz · Google hesabı gerekir</span>
+            </span>
+          </button>
+          <button type="button" class="servis" data-servis="youtube">
+            <span class="servis-logo" style="background:#FF0000">YT</span>
+            <span>
+              <span class="servis-ad">YouTube</span>
+              <span class="servis-not">Süresiz · liste dışı, kimse göremez</span>
+            </span>
+          </button>
+          <button type="button" class="servis" data-servis="swisstransfer">
+            <span class="servis-logo" style="background:#1E40AF">ST</span>
+            <span>
+              <span class="servis-ad">SwissTransfer</span>
+              <span class="servis-not">Üyelik gerekmez · link 30 gün geçerli</span>
+            </span>
+          </button>
+        </div>
+
+        <div class="form-grup" style="margin-bottom:0">
+          <label for="videoLink">Kaydınızın linki</label>
+          <input type="url" id="videoLink" name="videoLink" placeholder="https://…" required>
+          <p class="ipucu">Linkin paylaşım izni herkese açık olmalıdır. Erişilemeyen linkler değerlendirmeye alınamaz.</p>
+        </div>
+
+        <div class="hata" id="kayitHata">Kaydınızın linkini eklemeniz gerekiyor.</div>
+
+        <div class="bolum-ayrac"><span>Onaylar</span></div>
+
+        <div class="onay">
+          <input type="checkbox" id="onay1" required>
+          <label for="onay1">Gönderdiğim kaydın Radyo Fenomen Next kapsamında değerlendirilmesini ve program iletişiminde kullanılabilmesini kabul ediyorum.</label>
+        </div>
+        <div class="onay" style="margin-top:14px">
+          <input type="checkbox" id="onay2" required>
+          <label for="onay2"><a href="aydinlatma.html" target="_blank" rel="noopener">Aydınlatma metnini</a> okudum, kişisel verilerimin işlenmesine onay veriyorum.</label>
+        </div>
+
+        <div class="gonder-sar">
+          <button type="submit" class="buyuk-btn gonder-btn" id="gonderBtn">Başvuruyu gönder <span class="ok">→</span></button>
+          <p class="gonder-not">18 yaşından küçük adaylardan veli onayı talep edilir.</p>
+        </div>
+      </form>
+
+      <div class="tesekkur" id="tesekkur">
+        <div class="tik">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <h2>Başvurunuz alındı</h2>
+        <p>Başvurunuz kaydedildi. Bir sonraki aşamaya geçmeniz hâlinde Kasım ayının ilk haftasında sizinle iletişime geçilecektir.</p>
+        <div style="margin-top:30px"><a href="#hero" class="hayalet-btn koyu-metin">Sayfanın başına dön</a></div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- SSS -->
-<section class="bolum" id="sorular">
+<section class="bolum acik-2" id="sorular">
   <div class="kap">
     <div class="bolum-bas">
-      <div class="etiket belir">Sık sorulan sorular</div>
-      <h2 class="yaz"><span>Merak edilenler</span></h2>
+      <div class="etiket belir">Sıkça sorulan sorular</div>
+      <h2 class="yaz"><span>Aklında <em>kalan var mı?</em></span></h2>
     </div>
 
     <div class="sss-liste" id="sssListe">
@@ -236,13 +567,13 @@
         <button class="sss-bas" type="button">
           <div>
             <h3>Kaydımı nasıl göndereceğim?</h3>
-            <p class="sss-onizleme">Kayıt siteye yüklenmez; transfer servisi veya bulut linki gönderilir.</p>
+            <p class="sss-onizleme">Kayıt siteye yüklenmez; Google Drive veya YouTube linki gönderilir.</p>
           </div>
           <span class="sss-arti"></span>
         </button>
         <div class="sss-govde"><div class="sss-govde-ic">
-          <p>Kayıt siteye yüklenmez. Başvuru formundaki kısayollardan WeTransfer, SwissTransfer, SendGB veya Google Drive açılır; kaydınızı oraya yükleyip oluşan linki forma yapıştırırsınız. Her servisin nasıl kullanılacağı formda adım adım anlatılır.</p>
-          <p>Link gönderilirken paylaşım izninin herkese açık olarak ayarlanması gerekmektedir; erişilemeyen linkler değerlendirmeye alınamamaktadır.</p>
+          <p>Kayıt siteye yüklenmez. Başvuru formundaki kısayollardan Google Drive veya YouTube açılır; kaydınızı oraya yükleyip oluşan linki forma yapıştırırsınız. Her ikisinin de nasıl kullanılacağı formda adım adım anlatılır.</p>
+          <p>İki yolun da linki süresizdir. Google Drive'da paylaşım izninin "bağlantıya sahip olan herkes", YouTube'da videonun "liste dışı" seçilmesi gerekir; erişilemeyen linkler değerlendirmeye alınamamaktadır.</p>
         </div></div>
       </div>
 
@@ -270,7 +601,7 @@
         </button>
         <div class="sss-govde"><div class="sss-govde-ic">
           <p>Dört kazanan, Radyo Fenomen Next'te üç aylık pilot yayın dönemine başlar. Performansa bağlı olarak yayın kalıcı bir program saatine dönüşebilir.</p>
-          <p>Pilot dönemin yanı sıra yayıncılık eğitimi, mentorluk, profesyonel fotoğraf ve video çekimi, kişisel marka desteği ile içerik üretim ekipmanı sağlanır. Ayrıntılar <a href="odul.html" style="text-decoration:underline;text-underline-offset:3px">Ödül</a> sayfasında yer alır.</p>
+          <p>Pilot dönemin yanı sıra yayıncılık eğitimi, mentorluk, profesyonel fotoğraf ve video çekimi, kişisel marka desteği ile içerik üretim ekipmanı sağlanır. Ayrıntılar <a href="#odul" style="text-decoration:underline;text-underline-offset:3px">Ödül</a> bölümünde yer alır.</p>
         </div></div>
       </div>
 
@@ -291,24 +622,42 @@
     </div>
 
     <div class="belir" style="margin-top:52px">
-      <a href="basvuru.html" class="buyuk-btn">Başvuru yap <span class="ok">→</span></a>
+      <a href="#basvuru" class="buyuk-btn">Başvuru yap <span class="ok">→</span></a>
     </div>
   </div>
 </section>
+
+<!-- SERVİS MODALI -->
+<div class="perde" id="perde">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalBaslik">
+    <button class="modal-kapat" id="modalKapat" aria-label="Kapat">&times;</button>
+    <div class="modal-logo" id="modalLogo">GD</div>
+    <h3 id="modalBaslik">Google Drive</h3>
+    <p class="modal-not" id="modalNot"></p>
+    <div id="modalAdimlar"></div>
+    <div class="modal-eylem">
+      <a href="#" target="_blank" rel="noopener" class="buyuk-btn" id="modalGit">Servisi aç <span class="ok">→</span></a>
+      <button type="button" class="hayalet-btn koyu-metin" id="modalTamam">Linki aldım, forma dön</button>
+    </div>
+  </div>
+</div>
 
 <footer class="alt">
   <div class="kap">
     <div class="alt-ust">
       <div class="alt-slogan">Sıradaki Fenomen <em>dışarıda bir yerde.</em></div>
-      <img src="assets/fenomen-logo-beyaz.png" alt="Radyo Fenomen Next" class="alt-logo">
+      <div class="alt-sag">
+        <a href="#basvuru" class="buyuk-btn">Başvuru yap <span class="ok">→</span></a>
+        <img src="assets/fenomen-next-logo-beyaz.png" alt="Radyo Fenomen Next" class="alt-logo">
+      </div>
     </div>
     <nav class="alt-orta">
-      <a href="program.html">Program</a>
-      <a href="juri.html">Jüri</a>
-      <a href="takvim.html">Takvim</a>
-      <a href="odul.html">Ödül</a>
+      <a href="#program">Program</a>
+      <a href="#juri">Jüri</a>
+      <a href="#takvim">Takvim</a>
+      <a href="#odul">Ödül</a>
+      <a href="#basvuru">Başvuru</a>
       <a href="#sorular">Sorular</a>
-      <a href="basvuru.html">Başvuru</a>
       <a href="aydinlatma.html">Aydınlatma metni</a>
       <a href="mailto:next@radyofenomen.com">next@radyofenomen.com</a>
     </nav>
@@ -320,5 +669,6 @@
 </footer>
 
 <script src="js/app.js"></script>
+<script src="js/basvuru.js"></script>
 </body>
 </html>

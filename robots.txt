@@ -1,3 +1,4 @@
-# Ön izleme dönemi — kadro kesinleşene kadar dizine eklenmesin
 User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: https://bayrakstar.github.io/fenomen-next/sitemap.xml

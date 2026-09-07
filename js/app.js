@@ -25,6 +25,46 @@
   });
 })();
 
+/* ---------- LİSTELERDE SIRALI GİRİŞ ----------
+   Liste öğeleri tek blok hâlinde belirdiğinde hareket toplu ve sert duruyor.
+   Burada her öğeye sırasına göre gecikme veriliyor; gözcü onları tek tek açıyor.
+   Kaydırma animasyonu bloğundan ÖNCE çalışmalı — .belir sınıflarını o topluyor. */
+(function siraliGiris(){
+  const GRUPLAR = [
+    ['.faz-liste',     ':scope > .faz',       70],
+    ['.yol-liste',     ':scope > .yol-satir', 60],
+    ['.rozetler',      ':scope > .rozet',     35],
+    ['.gerisayim',     ':scope > div',        90],
+    ['.juri-bekleyen', ':scope > .juri-yer',  70],
+    ['.sss-liste',     ':scope > .sss-oge',   45],
+    ['.kutu-izgara',   ':scope > .kutu',      90]
+  ];
+  GRUPLAR.forEach(([kap, secici, adim]) => {
+    document.querySelectorAll(kap).forEach(k => {
+      k.querySelectorAll(secici).forEach((o, i) => {
+        o.classList.add('belir');
+        // elle verilmiş gecikme varsa ona dokunma
+        if (!o.style.getPropertyValue('--gec')) o.style.setProperty('--gec', (i * adim) + 'ms');
+      });
+    });
+  });
+})();
+
+/* ---------- BÖLÜM BAŞLIKLARI SIRALI ----------
+   Etiket → başlık → açıklama aynı anda geliyordu; araya küçük aralık konuyor. */
+(function baslikSirasi(){
+  document.querySelectorAll('.bolum-bas').forEach(b => {
+    const et = b.querySelector('.etiket');
+    const rz = b.querySelector('.durum-rozet');
+    const h  = b.querySelector('.yaz');
+    const p  = b.querySelector('p');
+    if (et && !et.style.getPropertyValue('--gec')) et.style.setProperty('--gec','0ms');
+    if (rz && !rz.style.getPropertyValue('--gec')) rz.style.setProperty('--gec','90ms');
+    if (h  && !h.style.getPropertyValue('--gec'))  h.style.setProperty('--gec','120ms');
+    if (p  && !p.style.getPropertyValue('--gec'))  p.style.setProperty('--gec','300ms');
+  });
+})();
+
 /* ---------- KAYDIRMA ANİMASYONLARI ---------- */
 (function animasyon(){
   const bekleyen = new Set(document.querySelectorAll('.belir, .yaz, .cizgi-ciz'));
@@ -50,6 +90,13 @@
     requestAnimationFrame(tara);
   }
 
+  /* Hero zaten ekranda: gözcünün alt kırpma payına takılan sayaç şeridi hiç açılmıyordu.
+     Hero içindekiler kendi --gec sıralarıyla, yükleme anında açılır. */
+  document.querySelectorAll('#hero .belir, #hero .yaz').forEach(o => {
+    bekleyen.delete(o);
+    requestAnimationFrame(() => o.classList.add('gorunur'));
+  });
+
   bekleyen.forEach(o => gozcu.observe(o));
   window.addEventListener('scroll', kuyruk, {passive:true});
   window.addEventListener('resize', kuyruk, {passive:true});
@@ -57,18 +104,20 @@
 })();
 
 /* ---------- SLIDER ---------- */
+/* Açılışta "Fenomen kim?" sorusu duruyor; kısa bir bekleme sonrası cevaba dönüyor.
+   Sonrasında normal slayt döngüsü başlıyor — soru bir daha sorulmuyor. */
 const SLAYTLAR = [
   {
-    baslik: 'Yeni neslin<br>sesini <em>arıyoruz</em>',
-    alt: "Radyo Fenomen Next, yeni nesil yayıncıları keşfetmek için başlatılan talent programıdır. Başvurular 31 Ekim'e kadar açıktır."
+    baslik: 'Belki <em>sen</em>.',
+    alt: "Telefonuna aldığın 60 saniyelik kayıt, tam da o Fenomen anı olabilir."
   },
   {
     baslik: 'Sıradaki ses<br><em>seninki</em> olabilir',
-    alt: 'Başvuru için deneyim aranmıyor. 60 saniyelik bir kayıt ve dört soruluk kısa bir form yeterli.'
+    alt: 'Deneyim aranmıyor. Bir kayıt, iki soru, birkaç dakika yeterli.'
   },
   {
-    baslik: 'Bir sonraki<br>Fenomen <em>kim?</em>',
-    alt: "Dört yeni yayıncı, Ocak ayında Radyo Fenomen Next'te kendi programıyla yayına başlıyor."
+    baslik: 'Yeni neslin sesini<br><em>arıyoruz</em>',
+    alt: "Dört yeni yayıncı, Ocak ayında kendi programıyla yayına başlıyor."
   }
 ];
 
@@ -82,6 +131,34 @@ const SLAYTLAR = [
   let i = 0, zaman;
   const ic = baslik.querySelector('span');
 
+  /* yazı: aşağı kaybol → içerik değiş → yukarı gel */
+  function yaziDegistir(yeniBaslik, yeniAlt){
+    ic.style.transition = 'transform .58s cubic-bezier(.55,0,.75,.35), filter .5s ease';
+    ic.style.transform = 'translateY(-108%)';
+    ic.style.filter = 'blur(5px)';
+    alt.style.transition = 'opacity .45s ease, transform .45s ease, filter .45s ease';
+    alt.style.opacity = 0;
+    alt.style.transform = 'translateY(-12px)';
+    alt.style.filter = 'blur(5px)';
+
+    setTimeout(() => {
+      ic.innerHTML = yeniBaslik;
+      alt.textContent = yeniAlt;
+      ic.style.transition = 'none';
+      ic.style.transform = 'translateY(108%)';
+      alt.style.transform = 'translateY(12px)';
+      requestAnimationFrame(() => {
+        ic.style.transition = 'transform 1.05s cubic-bezier(.16,.84,.28,1), filter .7s ease';
+        ic.style.transform = 'none';
+        ic.style.filter = 'blur(0)';
+        alt.style.transition = 'opacity .7s ease .12s, transform .8s cubic-bezier(.16,.84,.28,1) .12s, filter .7s ease .12s';
+        alt.style.opacity = 1;
+        alt.style.transform = 'none';
+        alt.style.filter = 'blur(0)';
+      });
+    }, 560);
+  }
+
   function git(yeni){
     if (yeni === i) return;
     slaytlar[i].classList.remove('aktif');
@@ -89,27 +166,7 @@ const SLAYTLAR = [
     i = yeni;
     slaytlar[i].classList.add('aktif');
     noktalar[i].classList.add('aktif');
-
-    // yazı: aşağı kaybol → içerik değiş → yukarı gel
-    ic.style.transition = 'transform .5s cubic-bezier(.4,0,1,1)';
-    ic.style.transform = 'translateY(-108%)';
-    alt.style.transition = 'opacity .4s ease, transform .4s ease';
-    alt.style.opacity = 0;
-    alt.style.transform = 'translateY(-10px)';
-
-    setTimeout(() => {
-      ic.innerHTML = SLAYTLAR[i].baslik;
-      alt.textContent = SLAYTLAR[i].alt;
-      ic.style.transition = 'none';
-      ic.style.transform = 'translateY(108%)';
-      alt.style.transform = 'translateY(10px)';
-      requestAnimationFrame(() => {
-        ic.style.transition = 'transform .9s cubic-bezier(.22,1,.36,1)';
-        ic.style.transform = 'none';
-        alt.style.opacity = 1;
-        alt.style.transform = 'none';
-      });
-    }, 480);
+    yaziDegistir(SLAYTLAR[i].baslik, SLAYTLAR[i].alt);
   }
 
   function otomatik(){
@@ -133,7 +190,37 @@ const SLAYTLAR = [
     bas = null;
   }, {passive:true});
 
-  otomatik();
+  /* açılış: soru → cevap. Hareket azaltma açıksa soru beklemeden cevaba döner. */
+  const azalt = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if (azalt){
+    ic.innerHTML = SLAYTLAR[0].baslik;
+    alt.textContent = SLAYTLAR[0].alt;
+    otomatik();
+  } else {
+    setTimeout(() => { yaziDegistir(SLAYTLAR[0].baslik, SLAYTLAR[0].alt); otomatik(); }, 2900);
+  }
+})();
+
+/* ---------- MENÜDE AKTİF BÖLÜM ---------- */
+(function menuTakip(){
+  const baglar = [...document.querySelectorAll('.ustbar-menu a[href^="#"], .mobil-menu a[href^="#"]')];
+  if (!baglar.length) return;
+
+  const hedefler = baglar
+    .map(a => document.querySelector(a.getAttribute('href')))
+    .filter(Boolean);
+  if (!hedefler.length) return;
+
+  const isaretle = id => baglar.forEach(a =>
+    a.classList.toggle('bu-sayfa', a.getAttribute('href') === '#' + id));
+
+  const gozcu = new IntersectionObserver(giren => {
+    // ekranın üst yarısına en yakın bölüm aktif sayılır
+    const gorunen = giren.filter(g => g.isIntersecting);
+    if (gorunen.length) isaretle(gorunen[0].target.id);
+  }, {rootMargin:'-45% 0px -50% 0px'});
+
+  hedefler.forEach(h => gozcu.observe(h));
 })();
 
 /* ---------- SSS ---------- */

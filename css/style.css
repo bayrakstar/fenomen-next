@@ -13,16 +13,20 @@
   --gri:#8E8781;
   --kirmizi:#FF0007;
   --kirmizi-koyu:#D40006;
+  --magenta:#FF2D6E;
+  --turuncu:#FF7A3D;
+  --mor:#3A0E14;
   --cizgi:rgba(23,19,15,.11);
   --cizgi-koyu:rgba(255,255,255,.14);
   --max:1180px;
   --dar:840px;
   --yumusak:cubic-bezier(.22,1,.36,1);
+  --sinema:cubic-bezier(.16,.84,.28,1);
   --ust:74px;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;overflow-x:hidden}
 body{
   background:var(--kagit);
   color:var(--murekkep);
@@ -60,17 +64,17 @@ h1,h2,h3,.baslik{
    ANİMASYON
    ========================================================== */
 .belir{
-  opacity:0;transform:translateY(24px);
-  transition:opacity .85s var(--yumusak),transform .85s var(--yumusak);
+  opacity:0;transform:translateY(18px);filter:blur(7px);
+  transition:opacity .9s var(--yumusak),transform 1.05s var(--yumusak),filter .8s var(--yumusak);
   transition-delay:var(--gec,0ms);
 }
-.belir.gorunur{opacity:1;transform:none}
+.belir.gorunur{opacity:1;transform:none;filter:blur(0)}
 
 /* satır satır maskeli yazı açılışı */
 .yaz{display:block;overflow:hidden}
 .yaz > span{
   display:block;transform:translateY(108%);
-  transition:transform 1s var(--yumusak);
+  transition:transform 1.15s var(--sinema);
   transition-delay:var(--gec,0ms);
 }
 .yaz.gorunur > span{transform:none}
@@ -84,7 +88,8 @@ h1,h2,h3,.baslik{
 .cizgi-ciz.gorunur{transform:scaleX(1)}
 
 @media(prefers-reduced-motion:reduce){
-  .belir,.yaz > span,.cizgi-ciz{transition:none !important;opacity:1 !important;transform:none !important}
+  .belir,.yaz > span,.cizgi-ciz{transition:none !important;opacity:1 !important;transform:none !important;filter:none !important}
+  .slayt-gorsel,.slayt.aktif .slayt-gorsel{transition:none !important;transform:none !important}
   html{scroll-behavior:auto}
 }
 
@@ -112,7 +117,7 @@ body.ic-sayfa .ustbar{
   box-shadow:0 1px 0 var(--cizgi);
   color:var(--murekkep);padding:12px 32px;
 }
-.ustbar-logo{height:26px;width:auto}
+.ustbar-logo{height:38px;width:auto}
 .ustbar .logo-beyaz{display:block}
 .ustbar .logo-siyah{display:none}
 .ustbar.sabit .logo-beyaz,body.ic-sayfa .logo-beyaz{display:none}
@@ -219,21 +224,21 @@ body.menu-acik .mobil-menu a{transform:none;opacity:1}
   background:var(--murekkep);overflow:hidden;
   display:flex;align-items:flex-end;
 }
-.slayt{position:absolute;inset:0;opacity:0;transition:opacity 1.5s var(--yumusak)}
+.slayt{position:absolute;inset:0;opacity:0;transition:opacity 1.7s var(--sinema)}
 .slayt.aktif{opacity:1}
 .slayt-gorsel{
   position:absolute;inset:0;background-size:cover;background-position:center;
-  transform:scale(1.05);transition:transform 9s linear;
+  transform:scale(1.04);transition:transform 11s cubic-bezier(.24,.4,.3,1);
 }
-.slayt.aktif .slayt-gorsel{transform:scale(1.13)}
+.slayt.aktif .slayt-gorsel{transform:scale(1.12)}
 .slayt::after{
   content:'';position:absolute;inset:0;
   background:
-    linear-gradient(90deg,rgba(10,8,6,.82) 0%,rgba(10,8,6,.44) 42%,rgba(10,8,6,0) 78%),
-    linear-gradient(180deg,rgba(10,8,6,.52) 0%,rgba(10,8,6,.12) 36%,rgba(10,8,6,.88) 100%);
+    linear-gradient(96deg,rgba(46,10,14,.94) 0%,rgba(140,0,10,.70) 26%,rgba(255,0,7,.30) 48%,rgba(255,45,110,.06) 66%,transparent 78%),
+    linear-gradient(180deg,rgba(30,8,10,.34) 0%,rgba(30,8,10,0) 34%,rgba(28,8,10,.70) 100%);
 }
 .hero-grain{
-  position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.32;
+  position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.16;
   mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");
 }
@@ -573,7 +578,7 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
 .bolum-ayrac::after{content:'';flex:1;height:1px;background:var(--cizgi)}
 
 /* transfer servisleri */
-.servis-izgara{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:22px}
+.servis-izgara{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
 .servis{
   display:flex;align-items:center;gap:14px;text-align:left;cursor:pointer;
   background:var(--kagit);border:1px solid var(--cizgi);border-radius:14px;
@@ -689,7 +694,7 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
   text-transform:uppercase;max-width:15ch;
 }
 .alt-slogan em{font-style:normal;color:var(--kirmizi)}
-.alt-logo{height:42px;width:auto;opacity:.9}
+.alt-logo{height:58px;width:auto;opacity:.95}
 .alt-orta{display:flex;flex-wrap:wrap;gap:26px;padding:26px 0;font-size:14.5px}
 .alt-orta a{color:rgba(255,255,255,.62);transition:color .25s}
 .alt-alt{
@@ -849,7 +854,7 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
   .alt{padding:56px 0 28px}
   .alt-ust{padding-bottom:28px;gap:26px}
   .alt-slogan{font-size:23px;max-width:none;line-height:1.12}
-  .alt-logo{height:30px}
+  .alt-logo{height:44px}
   .alt-orta{gap:12px 22px;padding:22px 0;font-size:14px}
   .alt-alt{font-size:12px;padding-top:18px}
 
@@ -861,3 +866,157 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
   .mobil-menu a{font-size:28px}
   .huni{grid-template-columns:1fr}
 }
+
+
+/* ==========================================================
+   HERO — RENKLİ IŞIK LEKESİ VE SORU/CEVAP
+   ========================================================== */
+.hero::after{
+  content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(circle at 88% 8%,rgba(255,122,61,.22),transparent 42%);
+}
+.hero-soru{
+  display:block;font-family:'Archivo',sans-serif;font-weight:800;
+  text-transform:uppercase;letter-spacing:-.035em;line-height:.94;
+  font-size:clamp(42px,7.8vw,110px);
+}
+.hero-soru em{font-style:normal;color:var(--kirmizi)}
+.hero-baslik.soru-modu{max-width:none}
+
+/* ==========================================================
+   GERİ SAYIM ŞERİDİ
+   ========================================================== */
+.gerisayim{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--cizgi);border:1px solid var(--cizgi);margin-top:8px;
+}
+.gerisayim div{background:var(--kagit);padding:30px 24px}
+.acik-2 .gerisayim div{background:var(--kagit-2)}
+.gerisayim b{
+  display:block;font-family:'Archivo',sans-serif;font-weight:800;
+  font-size:26px;letter-spacing:-.02em;margin-bottom:6px;
+}
+.gerisayim span{font-size:14.5px;color:var(--murekkep-soft)}
+@media(max-width:680px){.gerisayim{grid-template-columns:1fr}}
+
+/* ==========================================================
+   HATIRLATMA KUTUSU
+   ========================================================== */
+.hatirlatma{
+  margin-top:34px;padding:26px 28px;max-width:660px;color:#fff;
+  background:linear-gradient(118deg,var(--mor) 0%,var(--kirmizi-koyu) 100%);
+}
+.hatirlatma p{margin:0;font-size:15.5px;line-height:1.6;color:rgba(255,255,255,.92)}
+
+/* ==========================================================
+   DURUM ROZETİ ("Yakında sizlerle")
+   ========================================================== */
+.durum-rozet{
+  display:inline-block;margin:14px 0 4px;padding:7px 16px;border-radius:999px;
+  font-family:'Archivo',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;
+  background:var(--kirmizi);color:#fff;
+}
+.koyu .durum-rozet{background:var(--turuncu);color:var(--murekkep)}
+
+/* servis kutuları iki sütuna düşünce ortalanmasın */
+@media(max-width:900px){.servis-izgara{grid-template-columns:repeat(2,1fr)}}
+
+/* form, bölüm başlığıyla aynı hizada başlasın — ortalanmış kutu kopuk duruyordu */
+#basvuru .kap-dar{max-width:var(--max);margin:0 auto}
+#basvuru .form-sar{max-width:var(--dar);margin-left:0}
+@media(max-width:900px){#basvuru .form-sar{max-width:none}}
+
+/* alt bilgide çağrı butonu + logo yan yana */
+.alt-sag{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+@media(max-width:620px){.alt-sag{width:100%;justify-content:space-between}}
+
+
+/* ==========================================================
+   HERO — TELEFON
+   Üstyazı letter-spacing ile tek satırda taşıp sayfayı yatay
+   kaydırıyordu; burada sarmalanıyor ve butonlar tam genişliğe iniyor.
+   ========================================================== */
+@media(max-width:820px){
+  .hero{height:100svh;min-height:540px}
+  .hero-icerik{padding:0 22px 104px}
+  .hero-ustyazi{flex-wrap:wrap;font-size:10px;letter-spacing:.16em;margin-bottom:16px;gap:9px}
+  .hero-ustyazi::before{width:24px}
+  .hero-baslik{font-size:clamp(38px,12.5vw,60px);max-width:none}
+  .hero-alt{font-size:15.5px;margin-top:18px;max-width:none}
+  .hero-eylem{gap:10px;margin-top:28px}
+  .hero-eylem a{flex:1 1 100%;text-align:center}
+  .hero-nokta{margin-top:26px}
+  .hero-nokta button{width:32px}
+  .hero-nokta button.aktif{width:46px}
+  /* telefonda üç bilgi üç satıra çıkıp içeriğin üstüne biniyordu */
+  .sayac-ic{gap:6px 18px;font-size:12px;padding:12px 22px;flex-wrap:nowrap;overflow:hidden}
+  .sayac-ic strong{font-size:13px;margin-right:6px}
+  .sayac-ic div:last-child{display:none}
+}
+
+/* ==========================================================
+   JÜRİ — İSİMLER AÇIKLANANA KADAR
+   Beş yerin ayrıldığı görünsün, hangi alanlardan olduğu bilinsin.
+   Gerçek kadro gelince .juri-izgara geri konur.
+   ========================================================== */
+.juri-bekleyen{display:flex;flex-direction:column;border-top:1px solid var(--cizgi)}
+.juri-yer{
+  display:flex;align-items:center;gap:24px;
+  padding:26px 0;border-bottom:1px solid var(--cizgi);
+}
+.juri-yer-rozet{
+  font-family:'Archivo',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--kirmizi);
+  flex:none;min-width:210px;
+}
+.juri-yer-cizgi{
+  flex:1;height:1px;
+  background:repeating-linear-gradient(90deg,var(--cizgi) 0 9px,transparent 9px 18px);
+}
+.juri-yer::after{
+  content:'Yakında';
+  font-family:'Archivo',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--gri);flex:none;
+}
+@media(max-width:820px){
+  .juri-yer{gap:14px;padding:20px 0}
+  .juri-yer-rozet{min-width:0;font-size:11px;letter-spacing:.14em}
+  .juri-yer::after{font-size:11px}
+}
+
+/* bekleme listesi zaten alt çizgiyle bitiyor, not'a ikinci çizgi gerekmiyor */
+.juri-bekleyen + .juri-not{border-top:none;padding-top:0;margin-top:30px}
+
+/* ==========================================================
+   HAREKET RÖTUŞLARI
+   ========================================================== */
+/* butondaki ok imleç üstündeyken ilerlesin */
+@media(hover:hover){
+  .buyuk-btn:hover .ok,.cagri-btn:hover span,.kart-git:hover span{transform:translateX(5px)}
+  .geri:hover span{transform:translateX(-4px)}
+
+  /* liste satırları imleç üstündeyken hafifçe içeri kaysın */
+  .faz,.yol-satir,.juri-yer{transition:background .4s var(--yumusak),padding-left .45s var(--yumusak)}
+  .faz:hover,.yol-satir:hover,.juri-yer:hover{padding-left:14px;background:linear-gradient(90deg,rgba(255,0,7,.045),transparent 62%)}
+
+  /* rozetler tek tek canlansın */
+  .rozet{transition:transform .35s var(--yumusak),border-color .3s,color .3s}
+  .rozet:hover{transform:translateY(-2px);border-color:var(--kirmizi);color:var(--kirmizi)}
+
+  /* geri sayım kutuları */
+  .gerisayim div{transition:background .4s var(--yumusak)}
+  .gerisayim div:hover b{color:var(--kirmizi)}
+  .gerisayim b{transition:color .3s}
+}
+
+/* hero'daki ilk soru biraz nefes alarak girsin */
+.hero-baslik.yaz > span{transition-duration:1.25s}
+
+/* üst bar sabitlenirken zıplamasın */
+.ustbar{will-change:auto}
+
+/* alt bilgi: çağrı butonu eklenince slogan sıkışıp dört satıra bölünüyordu */
+.alt-slogan{max-width:20ch;flex:1 1 420px}
+.alt-sag{flex:0 0 auto}
+@media(max-width:820px){.alt-slogan{flex:1 1 100%;max-width:none}}

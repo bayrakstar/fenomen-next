@@ -4,17 +4,26 @@ Radyo Fenomen'in yeni nesil yayıncı arayışı programı **Radyo Fenomen Next*
 
 Yayında: https://bayrakstar.github.io/fenomen-next/
 
-## Sayfalar
+## Yapı
+
+Site **tek sayfa**. Menüdeki her başlık `index.html` içindeki bir bölüme kaydırır;
+ayrı sekme ya da ayrı sayfa açılmaz.
+
+| Bölüm | Bağlantı | İçerik |
+|---|---|---|
+| Hero | `#hero` | "Fenomen kim?" sorusuyla açılıp cevaba dönen slider (3 kare) |
+| Program | `#program` | Altı aşama · değerlendirme kriterleri · Challenge Day |
+| Jüri | `#juri` | Beş kişilik jüri |
+| Takvim | `#takvim` | Geri sayım şeridi · aşama listesi · hatırlatma |
+| Ödül | `#odul` | Yayın hakkı · Creator Starter Pack · finalist kazanımları |
+| Başvuru | `#basvuru` | Başvuru formu ve kayıt linki |
+| Sorular | `#sorular` | Sık sorulan sorular (başvurunun hemen altında) |
 
 | Dosya | İçerik |
 |---|---|
-| `index.html` | Slider · başvuru çağrısı · dört başlık kartı · sık sorulan sorular |
-| `basvuru.html` | Başvuru formu, kayıt yükleme ve transfer linki seçenekleri |
-| `program.html` | Altı aşamalık süreç, değerlendirme kriterleri, Challenge Day |
-| `juri.html` | Beş kişilik jüri |
-| `takvim.html` | Program takvimi |
-| `odul.html` | Kazananlara sunulanlar |
-| `aydinlatma.html` | KVKK aydınlatma metni |
+| `index.html` | Sitenin tamamı |
+| `aydinlatma.html` | KVKK aydınlatma metni (ayrı sayfa kalmaya devam ediyor) |
+| `basvuru.html` · `program.html` · `juri.html` · `takvim.html` · `odul.html` | Eski adresler. Yalnızca yönlendirme: ilgili bölüme atıp kayboluyorlar. Paylaşılmış eski bir link kırılmasın diye duruyorlar. |
 
 Statik site; derleme adımı yok. Yerelde denemek için:
 
@@ -24,9 +33,12 @@ python3 -m http.server 8000
 
 ## Başvuru formu
 
-Kayıt siteye yüklenmez: aday videosunu WeTransfer, SwissTransfer, SendGB veya Google Drive'a
+Kayıt siteye yüklenmez: aday videosunu Google Drive, YouTube ("liste dışı") veya SwissTransfer'a
 yükler, oluşan linki forma yapıştırır. Her servisin nasıl kullanılacağı formdaki kısayollarda
 adım adım anlatılır.
+
+WeTransfer ve SendGB kaldırıldı: linkleri 7 gün sonra ölüyor, değerlendirme ise Kasım'a sarkıyor.
+Drive ve YouTube süresiz; SwissTransfer üye olmak istemeyenler için 30 gün duruyor.
 
 Başvurular **Supabase**'e yazılır — `bayrakstar-site` projesi, `fenomen_next_basvurular` tablosu.
 Form doğrudan PostgREST'e `POST` eder; ayrı bir sunucu yok.

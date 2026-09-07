@@ -10,15 +10,6 @@ const VERI = {
 
 /* ---------- TRANSFER SERVİSLERİ ---------- */
 const SERVISLER = {
-  wetransfer: {
-    ad:'WeTransfer', kisa:'WT', renk:'#409FFF', adres:'https://wetransfer.com',
-    not:'Üyelik gerektirmez. 2 GB\'a kadar dosya gönderilebilir, link 7 gün geçerlidir.',
-    adimlar:[
-      'Açılan sayfada "Dosya ekle" ile kaydınızı seçin.',
-      'E-posta yerine "Link oluştur" seçeneğini işaretleyin.',
-      'Oluşan linki kopyalayıp bu sayfadaki link alanına yapıştırın.'
-    ]
-  },
   swisstransfer: {
     ad:'SwissTransfer', kisa:'ST', renk:'#1E40AF', adres:'https://www.swisstransfer.com',
     not:'Üyelik gerektirmez. 50 GB\'a kadar dosya gönderilebilir, link 30 güne kadar geçerlidir.',
@@ -28,13 +19,13 @@ const SERVISLER = {
       'Oluşan linki kopyalayıp bu sayfadaki link alanına yapıştırın.'
     ]
   },
-  sendgb: {
-    ad:'SendGB', kisa:'SG', renk:'#2FA84F', adres:'https://www.sendgb.com',
-    not:'Üyelik gerektirmez. 5 GB\'a kadar dosya gönderilebilir.',
+  youtube: {
+    ad:'YouTube', kisa:'YT', renk:'#FF0000', adres:'https://www.youtube.com/upload',
+    not:'Süresi dolmaz. Videoyu "Liste dışı" yüklediğinizde arama sonuçlarında çıkmaz, yalnızca linki olan görür.',
     adimlar:[
-      'Kaydınızı yükleyin.',
-      '"Get a link" seçeneğini seçip yüklemeyi tamamlayın.',
-      'Oluşan linki kopyalayıp bu sayfadaki link alanına yapıştırın.'
+      'Kaydınızı yükleyin, başlık olarak adınızı yazın.',
+      'Görünürlük adımında "Liste dışı" seçeneğini işaretleyin.',
+      'Video linkini kopyalayıp bu sayfadaki link alanına yapıştırın.'
     ]
   },
   drive: {
