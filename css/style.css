@@ -1020,3 +1020,26 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
 .alt-slogan{max-width:20ch;flex:1 1 420px}
 .alt-sag{flex:0 0 auto}
 @media(max-width:820px){.alt-slogan{flex:1 1 100%;max-width:none}}
+
+/* ==========================================================
+   HERO GÖRSELİ — DİKEY EKRAN
+   Kareler 16:9. Telefonda ortadan kırpılınca kişi çerçevenin dışında
+   kalıyordu; kırpma noktası her karede öznenin üstüne alınıyor.
+   Perde de yatay kalırsa ekranın solunu komple kapatıyor — dikeye çevriliyor.
+   ========================================================== */
+@media(max-width:820px){
+  .slayt:nth-child(1) .slayt-gorsel{background-position:72% center}
+  .slayt:nth-child(2) .slayt-gorsel{background-position:66% center}
+  .slayt:nth-child(3) .slayt-gorsel{background-position:58% center}
+
+  .slayt::after{
+    background:
+      linear-gradient(179deg,
+        rgba(46,10,14,.42) 0%,
+        rgba(30,8,10,.10) 26%,
+        rgba(112,0,8,.72) 56%,
+        rgba(46,10,14,.95) 82%,
+        rgba(38,9,12,.97) 100%);
+  }
+  .hero::after{background:radial-gradient(circle at 78% 12%,rgba(255,122,61,.20),transparent 46%)}
+}
