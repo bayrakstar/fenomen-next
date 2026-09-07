@@ -60,3 +60,16 @@ Supabase panelinde `fenomen_next_basvurular` tablosu. `durum` alanı değerlendi
 - Jüri sayfasındaki isimler ve portreler **temsilîdir**; gerçek kadro açıklandığında değişecek.
 - Fontlar Google Fonts üzerinden gelir (Archivo + Roboto). Marka yazıyüzü Gosha Sans'ın
   web lisansı olmadığı için başlıklarda Archivo kullanılıyor.
+
+## Yayına gönderirken: sürüm etiketi
+
+`index.html` ve `aydinlatma.html` içinde stil ve script bağlantıları sürüm etiketi taşır:
+
+```
+css/style.css?v=20260907b
+js/app.js?v=20260907b
+```
+
+Tarayıcılar (özellikle telefonda Safari) sabit isimli dosyayı önbellekte tutuyor; etiket
+değişmezse kullanıcı eski stille kalıyor. **`css/style.css` veya `js/*.js` değiştiğinde
+bu etiketi de güncelle** — yoksa değişiklik yayına çıkar ama kimse göremez.
