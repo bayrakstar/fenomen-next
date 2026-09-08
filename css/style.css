@@ -45,7 +45,7 @@ button{font-family:inherit}
 .buyuk-btn:focus-visible,.cagri-btn:focus-visible,.mini-btn:focus-visible{outline-color:var(--murekkep)}
 
 /* sabit üst bar ankor bağlantılarını örtmesin */
-section[id]{scroll-margin-top:96px}
+section[id]{scroll-margin-top:120px}
 
 .kap{width:100%;max-width:var(--max);margin:0 auto;padding:0 28px}
 .kap-dar{width:100%;max-width:var(--dar);margin:0 auto;padding:0 28px}
@@ -117,7 +117,7 @@ body.ic-sayfa .ustbar{
   box-shadow:0 1px 0 var(--cizgi);
   color:var(--murekkep);padding:12px 32px;
 }
-.ustbar-logo{height:38px;width:auto}
+.ustbar-logo{height:76px;width:auto}
 .ustbar .logo-beyaz{display:block}
 .ustbar .logo-siyah{display:none}
 .ustbar.sabit .logo-beyaz,body.ic-sayfa .logo-beyaz{display:none}
@@ -694,7 +694,7 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
   text-transform:uppercase;max-width:15ch;
 }
 .alt-slogan em{font-style:normal;color:var(--kirmizi)}
-.alt-logo{height:58px;width:auto;opacity:.95}
+.alt-logo{height:116px;width:auto;opacity:.95}
 .alt-orta{display:flex;flex-wrap:wrap;gap:26px;padding:26px 0;font-size:14.5px}
 .alt-orta a{color:rgba(255,255,255,.62);transition:color .25s}
 .alt-alt{
@@ -750,6 +750,7 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
   .ustbar,.ustbar.sabit,body.ic-sayfa .ustbar{padding:12px 20px}
   .ustbar-menu{display:none}
   .ustbar-sag{gap:8px}
+  .ustbar-logo{height:64px}
   .menu-tus{display:block}
   .mini-btn{padding:10px 18px;font-size:12px}
 
@@ -854,7 +855,7 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
   .alt{padding:56px 0 28px}
   .alt-ust{padding-bottom:28px;gap:26px}
   .alt-slogan{font-size:23px;max-width:none;line-height:1.12}
-  .alt-logo{height:44px}
+  .alt-logo{height:88px}
   .alt-orta{gap:12px 22px;padding:22px 0;font-size:14px}
   .alt-alt{font-size:12px;padding-top:18px}
 
