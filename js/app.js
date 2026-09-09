@@ -108,16 +108,16 @@
    Sonrasında normal slayt döngüsü başlıyor — soru bir daha sorulmuyor. */
 const SLAYTLAR = [
   {
-    baslik: 'Belki <em>sen</em>.',
-    alt: "Telefonuna aldığın 60 saniyelik kayıt, tam da o Fenomen anı olabilir."
+    baslik: 'Yeni neslin sesini<br><em>arıyoruz</em>',
+    alt: "Dört yeni yayıncı, Ocak ayında kendi programıyla yayına başlıyor."
   },
   {
     baslik: 'Sıradaki ses<br><em>seninki</em> olabilir',
     alt: 'Deneyim aranmıyor. Bir kayıt, iki soru, birkaç dakika yeterli.'
   },
   {
-    baslik: 'Yeni neslin sesini<br><em>arıyoruz</em>',
-    alt: "Dört yeni yayıncı, Ocak ayında kendi programıyla yayına başlıyor."
+    baslik: 'Belki <em>sen</em>.',
+    alt: "Telefonuna aldığın 60 saniyelik kayıt, tam da o Fenomen anı olabilir."
   }
 ];
 

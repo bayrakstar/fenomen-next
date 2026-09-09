@@ -322,9 +322,23 @@ body.menu-acik .mobil-menu a{transform:none;opacity:1}
   background:radial-gradient(60% 70% at 50% 0%,#fff 0%,transparent 62%);
 }
 .cagri .etiket{color:rgba(255,255,255,.75);position:relative}
+.cagri-rozet{
+  display:inline-flex;align-items:center;gap:10px;position:relative;
+  font-family:'Archivo',sans-serif;font-size:17px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:#fff;
+  padding:13px 28px;border-radius:100px;
+  border:1.5px solid rgba(255,255,255,.5);background:rgba(255,255,255,.14);
+}
+.cagri-rozet b{font-weight:800;letter-spacing:.06em}
+.cagri-rozet::before{
+  content:'';width:9px;height:9px;border-radius:50%;background:#fff;
+  animation:rozetNabiz 1.9s ease-in-out infinite;
+}
+@keyframes rozetNabiz{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.72)}}
+@media (prefers-reduced-motion:reduce){.cagri-rozet::before{animation:none}}
 .cagri h2{
-  font-size:clamp(48px,10vw,138px);line-height:.88;letter-spacing:-.045em;
-  margin-top:20px;position:relative;
+  font-size:clamp(44px,8.6vw,124px);line-height:.9;letter-spacing:-.045em;
+  margin-top:24px;position:relative;white-space:nowrap;
 }
 .cagri p{
   margin:26px auto 0;max-width:50ch;font-size:18px;
@@ -797,7 +811,9 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
 
   /* çağrı bloğu */
   .cagri{padding:86px 0 90px}
-  .cagri h2{font-size:clamp(46px,15vw,68px);margin-top:16px}
+  .cagri h2{font-size:clamp(30px,11.6vw,68px);margin-top:20px}
+  .cagri-rozet{font-size:14px;letter-spacing:.08em;padding:11px 20px;gap:8px}
+  .cagri-rozet::before{width:8px;height:8px}
   .cagri p{font-size:16px;margin-top:20px}
   .cagri-btn{width:100%;justify-content:center;padding:19px 24px;font-size:14px;margin-top:30px}
   .cagri-not{font-size:13px;margin-top:18px}
