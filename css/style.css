@@ -1045,9 +1045,9 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
    Perde de yatay kalırsa ekranın solunu komple kapatıyor — dikeye çevriliyor.
    ========================================================== */
 @media(max-width:820px){
-  .slayt:nth-child(1) .slayt-gorsel{background-position:72% center}
-  .slayt:nth-child(2) .slayt-gorsel{background-position:66% center}
-  .slayt:nth-child(3) .slayt-gorsel{background-position:58% center}
+  .slayt:nth-child(1) .slayt-gorsel{background-position:58% center} /* slayt-3.jpg */
+  .slayt:nth-child(2) .slayt-gorsel{background-position:66% center} /* slayt-2.jpg */
+  .slayt:nth-child(3) .slayt-gorsel{background-position:72% center} /* slayt-1.jpg */
 
   .slayt::after{
     background:
