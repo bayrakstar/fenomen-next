@@ -104,8 +104,9 @@
 })();
 
 /* ---------- SLIDER ---------- */
-/* Açılışta "Fenomen kim?" sorusu duruyor; kısa bir bekleme sonrası cevaba dönüyor.
-   Sonrasında normal slayt döngüsü başlıyor — soru bir daha sorulmuyor. */
+/* Sıra müşteri kararı (9 Eyl 2026): arıyoruz → sıradaki ses → Fenomen kim? → Belki sen.
+   Soru artık açılışta bir kez sorulup kaybolmuyor, döngünün 3. halkası;
+   hemen ardından gelen "Belki sen." onun cevabı. */
 const SLAYTLAR = [
   {
     baslik: 'Yeni neslin sesini<br><em>arıyoruz</em>',
@@ -114,6 +115,10 @@ const SLAYTLAR = [
   {
     baslik: 'Sıradaki ses<br><em>seninki</em> olabilir',
     alt: 'Deneyim aranmıyor. Bir kayıt, iki soru, birkaç dakika yeterli.'
+  },
+  {
+    baslik: '<em>Fenomen</em> kim?',
+    alt: 'Mikrofon açıldığında olduğu gibi kalabilen kişi.'
   },
   {
     baslik: 'Belki <em>sen</em>.',
@@ -190,15 +195,12 @@ const SLAYTLAR = [
     bas = null;
   }, {passive:true});
 
-  /* açılış: soru → cevap. Hareket azaltma açıksa soru beklemeden cevaba döner. */
-  const azalt = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  if (azalt){
-    ic.innerHTML = SLAYTLAR[0].baslik;
-    alt.textContent = SLAYTLAR[0].alt;
-    otomatik();
-  } else {
-    setTimeout(() => { yaziDegistir(SLAYTLAR[0].baslik, SLAYTLAR[0].alt); otomatik(); }, 2900);
-  }
+  /* açılış: ilk slaytın yazısı HTML'de duruyor (giriş animasyonuyla beliriyor),
+     döngü onun okunmasına yetecek kadar bekleyip başlıyor. Sıra:
+     arıyoruz → sıradaki ses → Fenomen kim? → Belki sen. */
+  ic.innerHTML = SLAYTLAR[0].baslik;
+  alt.textContent = SLAYTLAR[0].alt;
+  otomatik();
 })();
 
 /* ---------- MENÜDE AKTİF BÖLÜM ---------- */
