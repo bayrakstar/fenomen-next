@@ -2,7 +2,7 @@
 
 Radyo Fenomen'in yeni nesil yayıncı arayışı programı **Radyo Fenomen Next** için başvuru sitesi.
 
-Yayında: https://bayrakstar.github.io/fenomen-next/
+Yayında: https://fenomennext.com/
 
 ## Yapı
 

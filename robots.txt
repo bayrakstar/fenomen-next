@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://bayrakstar.github.io/fenomen-next/sitemap.xml
+Sitemap: https://fenomennext.com/sitemap.xml
