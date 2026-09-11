@@ -1,7 +1,7 @@
 {
   "name": "Fenomen Next",
   "short_name": "Fenomen Next",
-  "description": "Radyo Fenomen Next — yeni neslin sesini arıyoruz.",
+  "description": "Fenomen Next — yeni neslin sesini arıyoruz.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

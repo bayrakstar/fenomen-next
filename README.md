@@ -1,6 +1,6 @@
-# Radyo Fenomen Next
+# Fenomen Next
 
-Radyo Fenomen'in yeni nesil yayıncı arayışı programı **Radyo Fenomen Next** için başvuru sitesi.
+Radyo Fenomen'in yeni nesil yayıncı arayışı programı **Fenomen Next** için başvuru sitesi.
 
 Yayında: https://fenomennext.com/
 
