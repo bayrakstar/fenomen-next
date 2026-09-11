@@ -13,7 +13,7 @@ Elle de çalıştırılabilir:  python3 araclar/surum-yaz.py
 import hashlib, pathlib, re, sys
 
 KOK = pathlib.Path(__file__).resolve().parent.parent
-VARLIKLAR = ["css/style.css", "js/app.js", "js/basvuru.js"]
+VARLIKLAR = ["css/style.css", "js/app.js", "js/basvuru.js", "js/panel.js"]
 
 
 def ozet(yol: pathlib.Path) -> str:
