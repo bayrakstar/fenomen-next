@@ -208,18 +208,43 @@ function ciz(){
   if (st.sekme === 'kisiler')     cizKisiler();
 }
 
+/* Adayın gönderdiği linkten Drive dosya kimliğini çıkarır.
+   Drive üç ayrı biçim üretiyor; üçünü de karşılıyoruz. Sunum/doküman
+   bağlantıları bilerek dışarıda — onlar kayıt değil. */
+function driveKimlik(a){
+  if (/\/(presentation|document|spreadsheets|forms)\//.test(a)) return null;
+  const m = a.match(/\/file\/d\/([\w-]{10,})/)
+        || a.match(/[?&]id=([\w-]{10,})/)
+        || a.match(/\/d\/([\w-]{25,})/);
+  return m ? m[1] : null;
+}
+
+function youtubeKimlik(a){
+  const m = a.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/|youtube\.com\/embed\/)([\w-]{6,})/);
+  return m ? m[1] : null;
+}
+
 function videoKutu(k){
-  if (k.video_dosya){
-    return `<iframe class="video" src="https://drive.google.com/file/d/${kacar(k.video_dosya)}/preview" allow="autoplay" referrerpolicy="no-referrer"></iframe>`;
+  const a  = k.kayit_adresi || '';
+  const ac = a ? `<a class="video-ac" href="${kacar(a)}" target="_blank" rel="noopener">Kaynağı yeni sekmede aç →</a>` : '';
+
+  /* Kendi arşivimize aldığımız kopya varsa önce o oynar. */
+  const drive = k.video_dosya || driveKimlik(a);
+  if (drive){
+    return `<iframe class="video" src="https://drive.google.com/file/d/${kacar(drive)}/preview" allow="autoplay" referrerpolicy="no-referrer"></iframe>
+      <div class="video-not">Oynatıcı boş kalıyorsa dosyanın paylaşım izni kapalı demektir.</div>${ac}`;
   }
-  const a = k.kayit_adresi || '';
-  const yt = a.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{6,})/);
+
+  const yt = youtubeKimlik(a);
   if (yt){
-    return `<iframe class="video" src="https://www.youtube-nocookie.com/embed/${kacar(yt[1])}" allowfullscreen referrerpolicy="no-referrer"></iframe>`;
+    return `<iframe class="video" src="https://www.youtube-nocookie.com/embed/${kacar(yt)}" allowfullscreen referrerpolicy="no-referrer"></iframe>${ac}`;
   }
+
   if (!a) return `<div class="video-yok">Kayıt bağlantısı yok.</div>`;
+
+  const sunum = /\/(presentation|document|spreadsheets|forms)\//.test(a);
   return `<div class="video-yok">
-      Bu kayıt panelde oynatılamıyor.<br>
+      ${sunum ? 'Aday kayıt yerine bir sunum/doküman göndermiş.' : 'Bu kayıt panelde oynatılamıyor.'}<br>
       <a href="${kacar(a)}" target="_blank" rel="noopener" style="text-decoration:underline">Bağlantıyı yeni sekmede aç →</a>
     </div>`;
 }
