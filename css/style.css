@@ -509,6 +509,29 @@ body.menu-acik .mobil-menu a{transform:none;opacity:1}
 .metin li{margin-bottom:7px}
 .metin li::marker{color:var(--kirmizi)}
 .metin strong{color:var(--murekkep);font-weight:500}
+.metin h3{
+  font-size:16px;margin:0 0 16px;letter-spacing:-.01em;text-transform:none;
+}
+.metin h3 .yasal-alt{
+  display:block;font-family:'Roboto',sans-serif;font-weight:400;font-size:13.5px;
+  color:var(--gri);letter-spacing:0;margin-top:5px;
+}
+.metin-bag{text-decoration:underline;text-underline-offset:3px}
+.yasal-kart{
+  background:var(--kagit-2);border-radius:14px;padding:24px 26px;margin:0 0 14px;
+}
+.yasal-ikili{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.yasal-etiket{
+  display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:10.5px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--kirmizi);margin-bottom:9px;
+}
+.yasal-ikili ul{margin:0 0 0 18px;font-size:14.5px;line-height:1.65}
+.yasal-ikili li{margin-bottom:6px}
+.yasal-ikili li:last-child{margin-bottom:0}
+@media (max-width:760px){
+  .yasal-kart{padding:20px 20px}
+  .yasal-ikili{grid-template-columns:1fr;gap:20px}
+}
 .metin .kutu-not{
   background:var(--kagit-2);border-radius:14px;padding:22px 24px;margin:30px 0 0;
   font-size:15px;color:var(--murekkep-soft);line-height:1.65;
@@ -649,6 +672,30 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
   color:var(--murekkep-soft);line-height:1.55;margin:0;text-transform:none;
 }
 .onay a{text-decoration:underline;text-underline-offset:3px}
+
+.onay-blok{
+  padding:20px 22px;margin-top:12px;background:var(--kagit-2);
+  border-radius:13px;border-left:2px solid var(--cizgi);
+}
+.onay-blok:first-of-type{margin-top:0}
+.onay-blok[hidden]{display:none}
+.onay-bas{margin-bottom:11px}
+.onay-rozet{
+  display:inline-block;font-family:'Archivo',sans-serif;font-weight:800;font-size:9.5px;
+  letter-spacing:.15em;text-transform:uppercase;padding:5px 9px;border-radius:5px;
+  background:transparent;color:var(--gri);border:1px dashed var(--cizgi);
+}
+.onay-rozet.zorunlu{background:var(--murekkep);color:#fff;border:1px solid var(--murekkep)}
+.onay-kanal{
+  margin:15px 0 0 29px;padding-top:14px;border-top:1px solid var(--cizgi);
+}
+.onay-kanal[hidden]{display:none}
+.kanal-bas{
+  display:block;font-family:'Archivo',sans-serif;font-weight:800;font-size:10px;
+  letter-spacing:.15em;text-transform:uppercase;color:var(--gri);margin-bottom:10px;
+}
+.onay.kucuk label{font-size:14px}
+.onay-kanal .hata{margin-left:29px}
 
 .gonder-sar{margin-top:34px;text-align:center}
 .gonder-btn{width:100%;font-size:16px;padding:22px 34px}

@@ -109,6 +109,67 @@ document.querySelectorAll('textarea[maxlength]').forEach(alan => {
   });
 })();
 
+/* ---------- ONAY ALANLARI ---------- */
+/* Dört onay ayrı ayrı alınır; hiçbiri ön seçili değildir.
+   Gönderim yalnızca aydınlatma teyidine (ve 18 yaş altında veli onayına) bağlanır. */
+
+function yasHesapla(tarihMetni){
+  const d = new Date(tarihMetni);
+  if (isNaN(d)) return null;
+  const bugun = new Date();
+  let y = bugun.getFullYear() - d.getFullYear();
+  const ayFark = bugun.getMonth() - d.getMonth();
+  if (ayFark < 0 || (ayFark === 0 && bugun.getDate() < d.getDate())) y--;
+  return y;
+}
+
+(function onayAlanlari(){
+  const form = document.getElementById('basvuruForm');
+  if (!form) return;
+
+  const dogum     = document.getElementById('dogum');
+  const veliBlok  = document.getElementById('veliBlok');
+  const onayVeli  = document.getElementById('onayVeli');
+  const yasHata   = document.getElementById('yasHata');
+  const onayIleti = document.getElementById('onayIleti');
+  const kanalSar  = document.getElementById('iletiKanal');
+  const kanalSms  = document.getElementById('kanalSms');
+  const kanalEp   = document.getElementById('kanalEposta');
+  const kanalHata = document.getElementById('kanalHata');
+
+  function yasiUygula(){
+    const yas = yasHesapla(dogum.value);
+    const kucuk = yas !== null && yas >= 16 && yas < 18;
+
+    veliBlok.hidden = !kucuk;
+    onayVeli.required = kucuk;
+    if (!kucuk) onayVeli.checked = false;
+
+    const cokKucuk = yas !== null && yas < 16;
+    yasHata.classList.toggle('gorunur', cokKucuk);
+    dogum.setCustomValidity(cokKucuk ? 'On altı yaşını doldurmamış adayların başvurusu kabul edilmemektedir.' : '');
+  }
+
+  function kanaliUygula(){
+    kanalSar.hidden = !onayIleti.checked;
+    if (!onayIleti.checked){
+      kanalSms.checked = false;
+      kanalEp.checked  = false;
+      kanalHata.classList.remove('gorunur');
+    }
+  }
+
+  dogum.addEventListener('change', yasiUygula);
+  dogum.addEventListener('input', yasiUygula);
+  onayIleti.addEventListener('change', kanaliUygula);
+  [kanalSms, kanalEp].forEach(k => k.addEventListener('change', () => {
+    if (kanalSms.checked || kanalEp.checked) kanalHata.classList.remove('gorunur');
+  }));
+
+  yasiUygula();
+  kanaliUygula();
+})();
+
 /* ---------- GÖNDERİM ---------- */
 (function gonder(){
   const form = document.getElementById('basvuruForm');
@@ -120,8 +181,20 @@ document.querySelectorAll('textarea[maxlength]').forEach(alan => {
     const btn  = document.getElementById('gonderBtn');
     const link = document.getElementById('videoLink').value.trim();
 
+    const kanalHata = document.getElementById('kanalHata');
+    const onayIleti = document.getElementById('onayIleti');
+    const kanalSms  = document.getElementById('kanalSms');
+    const kanalEp   = document.getElementById('kanalEposta');
+
     hata.classList.remove('gorunur');
+    kanalHata.classList.remove('gorunur');
     if (!form.checkValidity()){ form.reportValidity(); return; }
+
+    if (onayIleti.checked && !kanalSms.checked && !kanalEp.checked){
+      kanalHata.classList.add('gorunur');
+      kanalHata.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
 
     if (!/^https?:\/\/.+\..+/.test(link)){
       hata.textContent = 'Link geçerli görünmüyor. Adresin "https://" ile başladığından emin olun.';
@@ -140,7 +213,15 @@ document.querySelectorAll('textarea[maxlength]').forEach(alan => {
       tanitim:      d.get('s1').trim(),
       program_adi:  d.get('s2').trim(),
       kayit_adresi: link,
-      kayit_turu:   'link'
+      kayit_turu:   'link',
+
+      /* Onaylar ayrı ayrı kaydedilir. Tarih-saat ile IP sunucu tarafında yazılır. */
+      onay_aydinlatma: document.getElementById('onayAydinlatma').checked,
+      onay_tanitim:    document.getElementById('onayTanitim').checked,
+      onay_ileti:      onayIleti.checked,
+      ileti_sms:       onayIleti.checked && kanalSms.checked,
+      ileti_eposta:    onayIleti.checked && kanalEp.checked,
+      onay_veli:       document.getElementById('onayVeli').checked
     };
 
     btn.disabled = true;

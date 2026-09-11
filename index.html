@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700;800&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=7feea412cd">
+<link rel="stylesheet" href="css/style.css?v=64d1eb451e">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -413,18 +413,55 @@
 
         <div class="bolum-ayrac"><span>Onaylar</span></div>
 
-        <div class="onay">
-          <input type="checkbox" id="onay1" required>
-          <label for="onay1">Gönderdiğim kaydın Fenomen Next kapsamında değerlendirilmesini ve program iletişiminde kullanılabilmesini kabul ediyorum.</label>
+        <div class="onay-blok">
+          <div class="onay-bas"><span class="onay-rozet zorunlu">Zorunlu</span></div>
+          <div class="onay">
+            <input type="checkbox" id="onayAydinlatma" required>
+            <label for="onayAydinlatma"><a href="aydinlatma.html" target="_blank" rel="noopener">“Radyo Fenomen Next Yarışması Katılımcı Aydınlatma Metni”</a>ni okudum; kişisel verilerimin hangi amaçlarla ve hangi hukuki sebeplere dayanılarak işlendiği, kimlere aktarılabileceği ve haklarım konusunda bilgilendirildim.</label>
+          </div>
         </div>
-        <div class="onay" style="margin-top:14px">
-          <input type="checkbox" id="onay2" required>
-          <label for="onay2"><a href="aydinlatma.html" target="_blank" rel="noopener">Aydınlatma metnini</a> okudum, kişisel verilerimin işlenmesine onay veriyorum.</label>
+
+        <div class="onay-blok">
+          <div class="onay-bas"><span class="onay-rozet">İsteğe bağlı</span></div>
+          <div class="onay">
+            <input type="checkbox" id="onayTanitim">
+            <label for="onayTanitim">Yarışmada Top 20 finalistleri veya Top 4 kazananları arasına girmem hâlinde; adımın, soyadımın ve şehir bilgimin, gönderdiğim altmış saniyelik kaydın ve yarışma sürecinde çekilen görüntü, ses ve fotoğraflarımın; yarışmanın internet sitesi, sosyal medya hesapları ile radyo ve dijital yayın mecralarında tanıtım ve duyuru amacıyla işlenmesine ve yayımlanmasına açık rıza veriyorum. Bu kapsamda “Görüntü ve Ses Kayıtlarının Kullanımına İlişkin Muvafakatname”yi okuduğumu ve kabul ettiğimi beyan ederim.</label>
+          </div>
         </div>
+
+        <div class="onay-blok">
+          <div class="onay-bas"><span class="onay-rozet">İsteğe bağlı</span></div>
+          <div class="onay">
+            <input type="checkbox" id="onayIleti">
+            <label for="onayIleti">Ataköy FM İletişim Hizmetleri San. ve Tic. A.Ş. tarafından; Radyo Fenomen Next’in sonraki sezonları ile Şirket’in yayın, etkinlik, kampanya ve duyurularına ilişkin ticari elektronik iletilerin tarafıma gönderilmesine onay veriyorum. Onay kaydımın İleti Yönetim Sistemi’ne (İYS) yüklenmesine açık rıza veriyorum.</label>
+          </div>
+          <div class="onay-kanal" id="iletiKanal" hidden>
+            <span class="kanal-bas">Gönderim kanalı</span>
+            <div class="onay kucuk">
+              <input type="checkbox" id="kanalSms">
+              <label for="kanalSms">Kısa mesaj (SMS)</label>
+            </div>
+            <div class="onay kucuk">
+              <input type="checkbox" id="kanalEposta">
+              <label for="kanalEposta">Elektronik posta</label>
+            </div>
+            <div class="hata" id="kanalHata">En az bir gönderim kanalı seçmeniz gerekiyor.</div>
+          </div>
+        </div>
+
+        <div class="onay-blok" id="veliBlok" hidden>
+          <div class="onay-bas"><span class="onay-rozet zorunlu">18 yaş altında zorunlu</span></div>
+          <div class="onay">
+            <input type="checkbox" id="onayVeli">
+            <label for="onayVeli">On sekiz yaşımı doldurmadım. Veli veya vasimin “Veli/Vasi Aydınlatma Metni ve Muvafakatnamesi”ni imzalayarak başvuruma onay verdiğini beyan ederim. İmzalı muvafakatnameyi en geç ön eleme sürecinde <a href="mailto:next@radyofenomen.com">next@radyofenomen.com</a> adresine ileteceğimi kabul ederim.</label>
+          </div>
+        </div>
+
+        <div class="hata" id="yasHata">On altı yaşını doldurmamış adayların başvurusu kabul edilmemektedir.</div>
 
         <div class="gonder-sar">
           <button type="submit" class="buyuk-btn gonder-btn" id="gonderBtn">Başvuruyu gönder <span class="ok">→</span></button>
-          <p class="gonder-not">18 yaşından küçük adaylardan veli onayı talep edilir.</p>
+          <p class="gonder-not">16–18 yaş aralığındaki adaylardan veli onayı talep edilir.</p>
         </div>
       </form>
 
@@ -454,13 +491,13 @@
         <button class="sss-bas" type="button">
           <div>
             <h3>Kimler başvurabilir?</h3>
-            <p class="sss-onizleme">18 yaşını dolduran herkes başvurabilir. Başvurular Türkiye'nin her ilinden kabul edilmektedir.</p>
+            <p class="sss-onizleme">16 yaşını dolduran herkes başvurabilir; 16–18 yaş aralığındaki adaylar veli onayıyla katılır.</p>
           </div>
           <span class="sss-arti"></span>
         </button>
         <div class="sss-govde"><div class="sss-govde-ic">
-          <p>18 yaşını dolduran herkes başvurabilir. Başvurular Türkiye'nin her ilinden kabul edilmektedir; İstanbul'da ikamet etme şartı aranmaz.</p>
-          <p>16–18 yaş aralığındaki adaylar veli onayı ile başvurabilir. Challenge Day'e davet edilen finalistlerin İstanbul ulaşımı ve konaklaması karşılanır.</p>
+          <p>16 yaşını dolduran herkes başvurabilir. Başvurular Türkiye'nin her ilinden kabul edilmektedir; İstanbul'da ikamet etme şartı aranmaz.</p>
+          <p>16–18 yaş aralığındaki adaylar veli veya vasi onayı ile başvurabilir; 16 yaşını doldurmamış adayların başvurusu kabul edilmez. Challenge Day'e davet edilen finalistlerin İstanbul ulaşımı ve konaklaması karşılanır.</p>
         </div></div>
       </div>
 
@@ -640,6 +677,6 @@
 </footer>
 
 <script src="js/app.js?v=71ddff1f98"></script>
-<script src="js/basvuru.js?v=49bac5ebfd"></script>
+<script src="js/basvuru.js?v=39ae90fde7"></script>
 </body>
 </html>
