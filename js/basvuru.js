@@ -150,9 +150,13 @@ function yasHesapla(tarihMetni){
     dogum.setCustomValidity(cokKucuk ? 'On altı yaşını doldurmamış adayların başvurusu kabul edilmemektedir.' : '');
   }
 
-  function kanaliUygula(){
+  /* Onay verildiği anda iki kanal da seçili gelir; aday dilediğini kaldırabilir,
+     ama en az biri kalmalıdır. */
+  function kanaliUygula(acildi){
     kanalSar.hidden = !onayIleti.checked;
-    if (!onayIleti.checked){
+    if (onayIleti.checked){
+      if (acildi){ kanalSms.checked = true; kanalEp.checked = true; }
+    } else {
       kanalSms.checked = false;
       kanalEp.checked  = false;
       kanalHata.classList.remove('gorunur');
@@ -161,13 +165,13 @@ function yasHesapla(tarihMetni){
 
   dogum.addEventListener('change', yasiUygula);
   dogum.addEventListener('input', yasiUygula);
-  onayIleti.addEventListener('change', kanaliUygula);
+  onayIleti.addEventListener('change', () => kanaliUygula(true));
   [kanalSms, kanalEp].forEach(k => k.addEventListener('change', () => {
     if (kanalSms.checked || kanalEp.checked) kanalHata.classList.remove('gorunur');
   }));
 
   yasiUygula();
-  kanaliUygula();
+  kanaliUygula(false);
 })();
 
 /* ---------- GÖNDERİM ---------- */

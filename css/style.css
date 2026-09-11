@@ -679,13 +679,8 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
 }
 .onay-blok:first-of-type{margin-top:0}
 .onay-blok[hidden]{display:none}
-.onay-bas{margin-bottom:11px}
-.onay-rozet{
-  display:inline-block;font-family:'Archivo',sans-serif;font-weight:800;font-size:9.5px;
-  letter-spacing:.15em;text-transform:uppercase;padding:5px 9px;border-radius:5px;
-  background:transparent;color:var(--gri);border:1px dashed var(--cizgi);
-}
-.onay-rozet.zorunlu{background:var(--murekkep);color:#fff;border:1px solid var(--murekkep)}
+.yildiz{color:var(--kirmizi);font-weight:700;margin-right:5px}
+.onay-aciklama{margin:0 0 16px}
 .onay-kanal{
   margin:15px 0 0 29px;padding-top:14px;border-top:1px solid var(--cizgi);
 }
