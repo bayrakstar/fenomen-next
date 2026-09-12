@@ -754,6 +754,24 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
 }
 .alt-slogan em{font-style:normal;color:var(--kirmizi)}
 .alt-logo{height:116px;width:auto;opacity:.95}
+.alt-takip{
+  display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap;
+  padding:30px 0;border-bottom:1px solid var(--cizgi-koyu);
+}
+.alt-takip-yazi{display:flex;flex-direction:column;gap:7px;max-width:46ch}
+.alt-takip-bas{
+  font-family:'Archivo',sans-serif;font-weight:800;font-size:15px;
+  letter-spacing:.14em;text-transform:uppercase;
+}
+.alt-takip-not{font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.5)}
+.alt-sosyal{display:flex;gap:12px;flex-wrap:wrap}
+.alt-sosyal a{
+  width:48px;height:48px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);
+  transition:background .25s,border-color .25s,transform .25s;
+}
+.alt-sosyal svg{width:20px;height:20px;fill:rgba(255,255,255,.82);transition:fill .25s}
 .alt-orta{display:flex;flex-wrap:wrap;gap:26px;padding:26px 0;font-size:14.5px}
 .alt-orta a{color:rgba(255,255,255,.62);transition:color .25s}
 .alt-alt{
@@ -790,6 +808,8 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
   .birak-alan:hover,.birak-alan.uzerinde{border-color:var(--kirmizi);background:#FFF6F5}
   .dosya-sil:hover{color:var(--kirmizi)}
   .modal-kapat:hover{background:var(--kirmizi);color:#fff}
+  .alt-sosyal a:hover{background:var(--kirmizi);border-color:var(--kirmizi);transform:translateY(-3px)}
+  .alt-sosyal a:hover svg{fill:#fff}
   .alt-orta a:hover{color:#fff}
   .alt-alt a:hover{color:#fff}
 }
@@ -919,6 +939,9 @@ textarea{resize:vertical;min-height:104px;line-height:1.55}
   .alt-ust{padding-bottom:28px;gap:26px}
   .alt-slogan{font-size:23px;max-width:none;line-height:1.12}
   .alt-logo{height:88px}
+  .alt-takip{padding:24px 0;gap:20px}
+  .alt-takip-yazi{max-width:none}
+  .alt-sosyal a{width:44px;height:44px}
   .alt-orta{gap:12px 22px;padding:22px 0;font-size:14px}
   .alt-alt{font-size:12px;padding-top:18px}
 
