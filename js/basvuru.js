@@ -245,6 +245,7 @@ function yasHesapla(tarihMetni){
       if (!c.ok) throw new Error('HTTP ' + c.status + ' ' + await c.text());
 
       form.style.display = 'none';
+      if (window.fbq) fbq('track', 'Lead');
       const tesekkur = document.getElementById('tesekkur');
       tesekkur.classList.add('gorunur');
       tesekkur.scrollIntoView({behavior:'smooth', block:'center'});
