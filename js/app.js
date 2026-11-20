@@ -110,19 +110,19 @@
 const SLAYTLAR = [
   {
     baslik: 'Yeni neslin sesini<br><em>arıyoruz</em>',
-    alt: "Dört yeni yayıncı, Ocak ayında kendi programıyla yayına başlıyor."
+    alt: "Başvuru inceleme süreci başladı. İlk 20 açıklaması çok yakında!"
   },
   {
     baslik: 'Sıradaki ses<br><em>seninki</em> olabilir',
-    alt: 'Deneyim aranmıyor. Bir kayıt, iki soru, birkaç dakika yeterli.'
+    alt: "Başvuru inceleme süreci başladı. İlk 20 açıklaması çok yakında!"
   },
   {
     baslik: '<em>Fenomen</em> kim?',
-    alt: 'Mikrofon açıldığında olduğu gibi kalabilen kişi.'
+    alt: "Başvuru inceleme süreci başladı. İlk 20 açıklaması çok yakında!"
   },
   {
     baslik: 'Belki <em>sen</em>.',
-    alt: "Telefonuna aldığın 60 saniyelik kayıt, tam da o Fenomen anı olabilir."
+    alt: "Başvuru inceleme süreci başladı. İlk 20 açıklaması çok yakında!"
   }
 ];
 
