@@ -34,6 +34,7 @@ const DURUMLAR = [
 let st = {
   jeton: null, tazeleme: null, uid: null, rol: null, ad: null, eposta: null,
   sekme: null, suzgec: 'yeni', arama: '',
+  oynat: null,   /* sırayla izle: { ids: [...], i: 0 } — girerken süzgecin anlık listesi */
   basvurular: [], puanlar: [], kisiler: []
 };
 
@@ -181,7 +182,7 @@ function sekmeleriKur(){
   el('sekmeler').innerHTML = liste
     .map(([id,ad]) => `<button class="sekme" data-sekme="${id}">${ad}</button>`).join('');
   el('sekmeler').querySelectorAll('.sekme').forEach(b =>
-    b.addEventListener('click', () => { st.sekme = b.dataset.sekme; ciz(); }));
+    b.addEventListener('click', () => { st.sekme = b.dataset.sekme; st.oynat = null; ciz(); }));
 }
 
 async function veriYukle(){
@@ -202,7 +203,7 @@ function ciz(){
   el('sekmeler').querySelectorAll('.sekme').forEach(b =>
     b.classList.toggle('aktif', b.dataset.sekme === st.sekme));
 
-  if (st.sekme === 'eleme')       cizEleme();
+  if (st.sekme === 'eleme')       st.oynat ? cizOynat() : cizEleme();
   if (st.sekme === 'degerlendir') cizDegerlendirme();
   if (st.sekme === 'sonuc')       cizSonuc();
   if (st.sekme === 'kisiler')     cizKisiler();
@@ -224,7 +225,7 @@ function youtubeKimlik(a){
   return m ? m[1] : null;
 }
 
-function videoKutu(k){
+function videoKutu(k, otomatik){
   const a  = k.kayit_adresi || '';
   const ac = a ? `<a class="video-ac" href="${kacar(a)}" target="_blank" rel="noopener">Kaynağı yeni sekmede aç →</a>` : '';
 
@@ -237,7 +238,7 @@ function videoKutu(k){
 
   const yt = youtubeKimlik(a);
   if (yt){
-    return `<iframe class="video" src="https://www.youtube-nocookie.com/embed/${kacar(yt)}" allowfullscreen referrerpolicy="no-referrer"></iframe>${ac}`;
+    return `<iframe class="video" src="https://www.youtube-nocookie.com/embed/${kacar(yt)}${otomatik ? '?autoplay=1' : ''}" allow="autoplay" allowfullscreen referrerpolicy="no-referrer"></iframe>${ac}`;
   }
 
   if (!a) return `<div class="video-yok">Kayıt bağlantısı yok.</div>`;
@@ -268,6 +269,7 @@ function cizEleme(){
     ${DURUMLAR.map(([id,ad]) =>
       `<button class="sz ${st.suzgec===id?'aktif':''}" data-sz="${id}">${ad}<b>${say(id)}</b></button>`).join('')}
     <div class="ara"><input type="text" id="araKutu" placeholder="Ad, şehir, program…" value="${kacar(st.arama)}"></div>
+    <button class="btn btn-sm btn-kirmizi" id="oynatBtn">▶ Sırayla izle</button>
   </div>`;
 
   const liste = suzulmus();
@@ -277,6 +279,10 @@ function cizEleme(){
 
   el('icerik').innerHTML = suzgec + kartlar;
   suzgecBagla();
+
+  const ob = el('oynatBtn');
+  ob.disabled = !liste.length;
+  ob.addEventListener('click', () => { st.oynat = { ids: liste.map(k => k.id), i: 0 }; ciz(); scrollTo(0, 0); });
 
   el('icerik').querySelectorAll('[data-durum]').forEach(b =>
     b.addEventListener('click', () => durumVer(b.dataset.id, b.dataset.durum)));
@@ -341,8 +347,112 @@ async function durumVer(id, durum){
   });
   if (!c.ok){ alert('Durum değiştirilemedi. Sayfayı yenileyip tekrar deneyin.'); return; }
   if (k) k.durum = durum;
-  ciz();
+  /* Sırayla izlerken yalnız oy düğmeleri yenilenir; video baştan başlamasın. */
+  if (st.oynat && el('oynOy')) el('oynOy').innerHTML = oyAlani(k);
+  else ciz();
 }
+
+/* ---------- SIRAYLA İZLE (eleyici) ----------
+   Süzgeçteki adaylar tek tek, büyük oynatıcıyla. Liste girişte
+   sabitlenir: "Bakılmadı"da oy verilen aday listeden kaybolmaz,
+   geri dönüp kararı değiştirmek mümkün. */
+const DURUM_AD = { yeni:'Bakılmadı', gecti:'Geçti', kararsiz:'Kararsız', elendi:'Elendi' };
+
+function cizOynat(){
+  const o = st.oynat, n = o.ids.length;
+  const ust = (sayac) => `<div class="oyn-ust">
+      <button class="btn btn-sm" data-oyn="kapat">← Listeye dön</button>
+      <span class="oyn-sayac">${sayac}</span>
+      <span class="oyn-ipucu"><kbd>←</kbd> <kbd>→</kbd> gezin · <kbd>1</kbd> Geçti · <kbd>2</kbd> Kararsız · <kbd>3</kbd> Elendi · <kbd>0</kbd> Geri al · <kbd>Esc</kbd> liste</span>
+    </div>`;
+
+  if (o.i >= n){
+    const say = d => o.ids.filter(id => (st.basvurular.find(x => x.id === id)?.durum || 'yeni') === d).length;
+    el('icerik').innerHTML = ust(`${n} / ${n}`) + `<div class="bos">
+        Bu listenin sonuna geldin.<br>
+        <span style="font-size:13.5px">Geçti ${say('gecti')} · Kararsız ${say('kararsiz')} · Elendi ${say('elendi')} · Bakılmadı ${say('yeni')}</span><br><br>
+        <button class="btn btn-sm" data-oyn="onceki">← Son adaya dön</button>
+        <button class="btn btn-sm btn-koyu" data-oyn="kapat">Listeye dön</button>
+      </div>`;
+    oynatBagla();
+    return;
+  }
+
+  const k = st.basvurular.find(x => x.id === o.ids[o.i]);
+  const y = yas(k.dogum);
+
+  el('icerik').innerHTML = ust(`${o.i + 1} <small>/ ${n}</small>`) + `
+    <div class="oyn">
+      <div>${videoKutu(k, true)}</div>
+      <div class="oyn-bilgi">
+        <div class="no">${String(k.sira_no).padStart(3,'0')}</div>
+        <div class="kart-ad">${kacar(k.ad)}</div>
+        <div class="kart-alt">${kacar(k.sehir)}${y!=null?` · ${y} yaşında`:''} · ${tarih(k.olusturuldu)}</div>
+        <div class="oyn-metin">
+          <div class="soru"><div class="etkt">Program adı</div><p>${kacar(k.program_adi)}</p></div>
+          <div class="soru"><div class="etkt">Kendini nasıl anlatıyor</div><p>${kacar(k.tanitim)}</p></div>
+          ${k.sosyal ? `<div class="soru"><div class="etkt">Sosyal medya</div><p>${kacar(k.sosyal)}</p></div>` : ''}
+        </div>
+        <div id="oynOy">${oyAlani(k)}</div>
+        <div class="oyn-gez">
+          <button class="btn btn-sm" data-oyn="onceki" ${o.i === 0 ? 'disabled' : ''}>← Önceki</button>
+          <button class="btn btn-sm" data-oyn="sonraki">Sonraki →</button>
+        </div>
+      </div>
+    </div>`;
+  oynatBagla();
+}
+
+function oyAlani(k){
+  const d = k.durum || 'yeni';
+  const tus = (id, ad, kisa) =>
+    `<button class="btn ${id} ${d===id?'secili':''}" data-durum="${id}" data-id="${k.id}">${ad}<kbd>${kisa}</kbd></button>`;
+  return `<div class="oyn-oy">${tus('gecti','Geçti',1)}${tus('kararsiz','Kararsız',2)}${tus('elendi','Elendi',3)}</div>
+    <div style="font-size:12.5px;color:var(--gri);margin-top:8px">Şu an: <b>${DURUM_AD[d]}</b>
+      ${d!=='yeni' ? ` · <a href="#" data-durum="yeni" data-id="${k.id}">geri al</a>` : ''}</div>`;
+}
+
+function oynatBagla(){
+  /* Oy düğmeleri yeniden çizildiği için tıklama üst kapta dinleniyor. */
+  el('icerik').onclick = ev => {
+    const b = ev.target.closest('[data-oyn],[data-durum]');
+    if (!b || !st.oynat) return;
+    ev.preventDefault();
+    if (b.dataset.durum) durumVer(b.dataset.id, b.dataset.durum);
+    else oynatGit(b.dataset.oyn);
+  };
+}
+
+function oynatGit(ne){
+  const o = st.oynat;
+  if (ne === 'kapat'){ st.oynat = null; el('icerik').onclick = null; ciz(); return; }
+  const yeni = ne === 'sonraki' ? Math.min(o.i + 1, o.ids.length) : Math.max(o.i - 1, 0);
+  if (yeni === o.i) return;
+  o.i = yeni; cizOynat();
+}
+
+document.addEventListener('keydown', ev => {
+  if (!st.oynat || st.sekme !== 'eleme') return;
+  if (ev.metaKey || ev.ctrlKey || ev.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(ev.target.tagName)) return;
+  const k = st.basvurular.find(x => x.id === st.oynat.ids[st.oynat.i]);
+  const oy = { '1':'gecti', '2':'kararsiz', '3':'elendi', '0':'yeni' }[ev.key];
+  if (ev.key === 'ArrowRight')     oynatGit('sonraki');
+  else if (ev.key === 'ArrowLeft') oynatGit('onceki');
+  else if (ev.key === 'Escape')    oynatGit('kapat');
+  else if (oy && k)                durumVer(k.id, oy);
+  else return;
+  ev.preventDefault();
+});
+
+/* Videoya tıklayınca klavye odağı oynatıcıya (başka siteye) geçiyor ve
+   ok tuşları bize ulaşmıyor. Tıklama oynatıcıya iletildikten sonra odağı geri al. */
+window.addEventListener('blur', () => {
+  if (!st.oynat) return;
+  setTimeout(() => {
+    const a = document.activeElement;
+    if (a && a.tagName === 'IFRAME') a.blur();
+  }, 0);
+});
 
 function suzgecBagla(){
   el('icerik').querySelectorAll('[data-sz]').forEach(b =>
