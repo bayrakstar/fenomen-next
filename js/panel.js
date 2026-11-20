@@ -238,7 +238,7 @@ function videoKutu(k, otomatik){
 
   const yt = youtubeKimlik(a);
   if (yt){
-    return `<iframe class="video" src="https://www.youtube-nocookie.com/embed/${kacar(yt)}${otomatik ? '?autoplay=1' : ''}" allow="autoplay" allowfullscreen referrerpolicy="no-referrer"></iframe>${ac}`;
+    return `<iframe class="video" src="https://www.youtube-nocookie.com/embed/${kacar(yt)}${otomatik ? '?autoplay=1' : ''}" allow="autoplay" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>${ac}`;
   }
 
   if (!a) return `<div class="video-yok">Kayıt bağlantısı yok.</div>`;
