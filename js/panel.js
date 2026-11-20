@@ -229,8 +229,11 @@ function videoKutu(k, otomatik){
   const a  = k.kayit_adresi || '';
   const ac = a ? `<a class="video-ac" href="${kacar(a)}" target="_blank" rel="noopener">Kaynağı yeni sekmede aç →</a>` : '';
 
-  /* Kendi arşivimize aldığımız kopya varsa önce o oynar. */
-  const drive = k.video_dosya || driveKimlik(a);
+  /* Kendi arşivimize aldığımız kopya varsa önce o oynar. Birden çok dosya
+     gönderenlerin kopyası Drive klasörü: video_dosya = 'klasor:<kimlik>'. */
+  const arsiv = k.video_dosya || '';
+  if (arsiv.startsWith('klasor:')) return klasorKutu(arsiv.slice(7), ac);
+  const drive = arsiv || driveKimlik(a);
   if (drive){
     return `<iframe class="video" src="https://drive.google.com/file/d/${kacar(drive)}/preview" allow="autoplay" referrerpolicy="no-referrer"></iframe>
       <div class="video-not">Oynatıcı boş kalıyorsa dosyanın paylaşım izni kapalı demektir.</div>${ac}`;
@@ -244,10 +247,7 @@ function videoKutu(k, otomatik){
   /* Klasör gönderenler: Drive'ın gömülebilir klasör görünümü. Dosyaya
      tıklayınca Drive yeni sekmede açar. */
   const klasor = a.match(/drive\.google\.com\/drive\/(?:u\/\d+\/)?folders\/([\w-]{10,})/);
-  if (klasor){
-    return `<iframe class="video" style="background:#fff" src="https://drive.google.com/embeddedfolderview?id=${kacar(klasor[1])}#list"></iframe>
-      <div class="video-not">Aday klasör göndermiş — dosyaya tıklayınca yeni sekmede açılır. Liste boşsa klasörün izni kapalı.</div>${ac}`;
-  }
+  if (klasor) return klasorKutu(klasor[1], ac);
 
   const sp = a.match(/open\.spotify\.com\/(episode|track)\/(\w+)/);
   if (sp){
@@ -266,6 +266,11 @@ function videoKutu(k, otomatik){
       ${sunum ? 'Aday kayıt yerine bir sunum/doküman göndermiş.' : 'Bu kayıt panelde oynatılamıyor.'}<br>
       <a href="${kacar(a)}" target="_blank" rel="noopener" style="text-decoration:underline">Bağlantıyı yeni sekmede aç →</a>
     </div>`;
+}
+
+function klasorKutu(id, ac){
+  return `<iframe class="video" style="background:#fff" src="https://drive.google.com/embeddedfolderview?id=${kacar(id)}#list"></iframe>
+    <div class="video-not">Aday birden çok dosya göndermiş — dosyaya tıklayınca yeni sekmede açılır. Liste boşsa klasörün izni kapalı.</div>${ac}`;
 }
 
 function suzulmus(){
