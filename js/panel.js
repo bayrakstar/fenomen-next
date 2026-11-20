@@ -241,6 +241,24 @@ function videoKutu(k, otomatik){
     return `<iframe class="video" src="https://www.youtube-nocookie.com/embed/${kacar(yt)}${otomatik ? '?autoplay=1' : ''}" allow="autoplay" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>${ac}`;
   }
 
+  /* Klasör gönderenler: Drive'ın gömülebilir klasör görünümü. Dosyaya
+     tıklayınca Drive yeni sekmede açar. */
+  const klasor = a.match(/drive\.google\.com\/drive\/(?:u\/\d+\/)?folders\/([\w-]{10,})/);
+  if (klasor){
+    return `<iframe class="video" style="background:#fff" src="https://drive.google.com/embeddedfolderview?id=${kacar(klasor[1])}#list"></iframe>
+      <div class="video-not">Aday klasör göndermiş — dosyaya tıklayınca yeni sekmede açılır. Liste boşsa klasörün izni kapalı.</div>${ac}`;
+  }
+
+  const sp = a.match(/open\.spotify\.com\/(episode|track)\/(\w+)/);
+  if (sp){
+    return `<iframe class="video" style="aspect-ratio:auto;height:232px" src="https://open.spotify.com/embed/${sp[1]}/${sp[2]}" allow="autoplay; encrypted-media"></iframe>${ac}`;
+  }
+
+  const ig = a.match(/instagram\.com\/(reel|p)\/([\w-]+)/);
+  if (ig){
+    return `<iframe class="video" style="aspect-ratio:9/15;max-height:72vh;width:auto;display:block;margin:0 auto" src="https://www.instagram.com/${ig[1]}/${ig[2]}/embed"></iframe>${ac}`;
+  }
+
   if (!a) return `<div class="video-yok">Kayıt bağlantısı yok.</div>`;
 
   const sunum = /\/(presentation|document|spreadsheets|forms)\//.test(a);
