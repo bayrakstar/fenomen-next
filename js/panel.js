@@ -116,7 +116,8 @@ function oturumYaz(d){
 }
 
 function cikis(){
-  st = { ...st, jeton:null, tazeleme:null, uid:null, rol:null, basvurular:[], puanlar:[], kisiler:[] };
+  st = { ...st, jeton:null, tazeleme:null, uid:null, rol:null, oynat:null, basvurular:[], puanlar:[], kisiler:[] };
+  kirli.clear(); clearTimeout(kayitZaman); el('icerik').onclick = null;
   try { localStorage.removeItem('next_oturum'); } catch {}
   el('panel').classList.add('gizli');
   el('girisEkran').style.display = '';
@@ -146,7 +147,10 @@ el('girisForm').addEventListener('submit', async ev => {
   }
 });
 
-el('cikisBtn').addEventListener('click', cikis);
+el('cikisBtn').addEventListener('click', async () => {
+  if (!(await juriKaydet()) && !confirm('Son puanlar kaydedilemedi. Yine de çıkılsın mı?')) return;
+  cikis();
+});
 
 /* ---------- açılış ---------- */
 async function baslat(){
@@ -204,7 +208,7 @@ function ciz(){
     b.classList.toggle('aktif', b.dataset.sekme === st.sekme));
 
   if (st.sekme === 'eleme')       st.oynat ? cizOynat() : cizEleme();
-  if (st.sekme === 'degerlendir') cizDegerlendirme();
+  if (st.sekme === 'degerlendir') st.oynat ? cizJuriOynat() : cizDegerlendirme();
   if (st.sekme === 'sonuc')       cizSonuc();
   if (st.sekme === 'kisiler')     cizKisiler();
 }
@@ -446,15 +450,24 @@ function oynatBagla(){
   };
 }
 
-function oynatGit(ne){
+async function oynatGit(ne){
+  const juri = st.sekme === 'degerlendir';
+  if (juri){ clearTimeout(kayitZaman); }
+  if (ne === 'kapat'){
+    /* Kaydedilemeyen puan varken listeye dönülmez; ekranda hata kalır. */
+    if (juri && !(await juriKaydet())) return;
+    if (!st.oynat) return;
+    st.oynat = null; el('icerik').onclick = null; ciz(); return;
+  }
+  if (juri) juriKaydet();
   const o = st.oynat;
-  if (ne === 'kapat'){ st.oynat = null; el('icerik').onclick = null; ciz(); return; }
   const yeni = ne === 'sonraki' ? Math.min(o.i + 1, o.ids.length) : Math.max(o.i - 1, 0);
   if (yeni === o.i) return;
-  o.i = yeni; cizOynat();
+  o.i = yeni; ciz();
 }
 
 document.addEventListener('keydown', ev => {
+  if (st.oynat && st.sekme === 'degerlendir') return juriTus(ev);
   if (!st.oynat || st.sekme !== 'eleme') return;
   if (ev.metaKey || ev.ctrlKey || ev.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(ev.target.tagName)) return;
   const k = st.basvurular.find(x => x.id === st.oynat.ids[st.oynat.i]);
@@ -500,12 +513,20 @@ function cizDegerlendirme(){
     return;
   }
 
-  const benim = st.puanlar.filter(p => p.juri_uid === st.uid);
-  const kalan = st.basvurular.filter(k => !benim.some(p => p.basvuru_id === k.id)).length;
+  const biten = st.basvurular.filter(k => puanTamam(benimPuan(k.id))).length;
+  const kalan = st.basvurular.length - biten;
+  const basla = !biten ? 'Sırayla izle ve puanla' : kalan ? 'Kaldığın yerden devam et' : 'Baştan gözden geçir';
 
   el('icerik').innerHTML =
-    `<div class="uyari">Toplam <b>${st.basvurular.length}</b> aday · puan verdikleriniz: <b>${st.basvurular.length - kalan}</b> · kalan: <b>${kalan}</b></div>` +
+    `<div class="uyari jo-bas"><span>Toplam <b>${st.basvurular.length}</b> aday · puanı tamamlanan: <b>${biten}</b> · kalan: <b>${kalan}</b></span>
+      <button class="btn btn-sm btn-kirmizi" id="juriBasla">▶ ${basla}</button></div>` +
     st.basvurular.map(kartJuri).join('');
+
+  el('juriBasla').addEventListener('click', () => {
+    const ids = st.basvurular.map(k => k.id);
+    st.oynat = { ids, i: Math.max(0, ids.findIndex(id => !puanTamam(benimPuan(id)))), olcut: 0 };
+    ciz(); scrollTo(0, 0);
+  });
 
   el('icerik').querySelectorAll('.pt').forEach(b =>
     b.addEventListener('click', () => {
@@ -536,7 +557,7 @@ function kartJuri(k){
         <div class="kart-ad">${kacar(k.ad)}</div>
         <div class="kart-alt">${kacar(k.sehir)} · ${kacar(k.program_adi)}</div>
       </div>
-      <div class="kart-sag">${verildi ? '<span class="durum gecti">Puanladınız</span>' : ''}</div>
+      <div class="kart-sag">${puanTamam(p) ? '<span class="durum gecti">Puanladınız</span>' : verildi ? '<span class="durum kararsiz">Eksik puan</span>' : ''}</div>
     </div>
 
     <div class="kart-govde">
@@ -596,8 +617,209 @@ async function puanKaydet(id, btn){
 
   iz.textContent = eksik ? `Kaydedildi — ${eksik} ölçüt boş.` : 'Kaydedildi ✓';
   btn.textContent = 'Güncelle';
-  kart.querySelector('.kart-sag').innerHTML = '<span class="durum gecti">Puanladınız</span>';
+  kart.querySelector('.kart-sag').innerHTML = eksik
+    ? '<span class="durum kararsiz">Eksik puan</span>'
+    : '<span class="durum gecti">Puanladınız</span>';
 }
+
+/* ---------- SIRAYLA İZLE VE PUANLA (jüri) ----------
+   Video çalarken puan verilir, her puan kendiliğinden kaydedilir.
+   Kayıtlar tek sırayla gider: yavaş kalan eski istek yeni puanı ezmesin. */
+const kirli = new Set();
+let kayitSuruyor = null, kayitHata = false, kayitZaman = null;
+
+const benimPuan = id => st.puanlar.find(p => p.basvuru_id === id && p.juri_uid === st.uid);
+const puanTamam = p => !!p && OLCUTLER.every(([a]) => p[a] != null);
+
+function juriKaydet(){
+  clearTimeout(kayitZaman);
+  if (!kayitSuruyor){
+    kayitHata = false;
+    kayitSuruyor = (async () => {
+      while (kirli.size){
+        const id = kirli.values().next().value;
+        kirli.delete(id);
+        const p = benimPuan(id);
+        if (!p) continue;
+        const kayit = { basvuru_id: id, juri_uid: st.uid, notlar: (p.notlar || '').trim() || null };
+        OLCUTLER.forEach(([a]) => { kayit[a] = p[a] ?? null; });
+
+        let tamam = false;
+        try {
+          const c = await istek('/rest/v1/fenomen_next_puanlar?on_conflict=basvuru_id,juri_uid', {
+            method:'POST',
+            headers:{ 'Prefer':'resolution=merge-duplicates,return=minimal' },
+            body: JSON.stringify(kayit)
+          });
+          tamam = c.ok;
+        } catch { /* bağlantı koptu; aşağıda sıraya geri alınıyor */ }
+
+        if (!st.uid) { kirli.clear(); break; }
+        if (!tamam){ kirli.add(id); kayitHata = true; break; }
+      }
+      return !kirli.size;
+    })().finally(() => { kayitSuruyor = null; juriDurum(); });
+  }
+  juriDurum();
+  return kayitSuruyor;
+}
+
+function puanKirlet(id, ms){
+  kirli.add(id);
+  juriDurum();
+  clearTimeout(kayitZaman);
+  kayitZaman = setTimeout(juriKaydet, ms);
+}
+
+function benimSatir(id){
+  let p = benimPuan(id);
+  if (!p){ p = { basvuru_id: id, juri_uid: st.uid }; st.puanlar.push(p); }
+  return p;
+}
+
+function juriDurum(){
+  const d = el('joKayit');
+  if (!d || !st.oynat) return;
+  const id = st.oynat.ids[st.oynat.i], p = benimPuan(id), tamam = puanTamam(p);
+  d.innerHTML = kayitHata
+    ? `<span class="jo-hata">Kaydedilemedi.</span> <a href="#" data-oyn="kaydet">Tekrar dene</a>`
+    : kirli.size || kayitSuruyor ? 'Kaydediliyor…'
+    : tamam ? 'Kaydedildi ✓ · <kbd>→</kbd> sonraki aday'
+    : p ? 'Kaydedildi ✓' : 'Puanlar otomatik kaydedilir.';
+  const s = el('joSonraki');
+  if (s) s.classList.toggle('btn-kirmizi', tamam);
+  const say = el('joTamam');
+  if (say) say.textContent = st.oynat.ids.filter(x => puanTamam(benimPuan(x))).length;
+}
+
+function juriSatirlar(k){
+  const p = benimPuan(k.id) || {};
+  return OLCUTLER.map(([a, ad], j) => `
+    <div class="jo-satir ${j === st.oynat.olcut ? 'aktif' : ''}" data-olcutno="${j}">
+      <div class="jo-ad"><span>${ad}</span><b>${p[a] ?? '—'}</b></div>
+      <div class="jo-tus">${[...Array(10)].map((_, n) =>
+        `<button type="button" class="pt ${p[a] === n + 1 ? 'secili' : ''}" data-jp="${n + 1}" data-j="${j}">${n + 1}</button>`).join('')}</div>
+    </div>`).join('');
+}
+
+function cizJuriOynat(){
+  const o = st.oynat, n = o.ids.length;
+  const biten = o.ids.filter(id => puanTamam(benimPuan(id))).length;
+  const ust = sayac => `<div class="oyn-ust">
+      <button class="btn btn-sm" data-oyn="kapat">← Listeye dön</button>
+      <span class="oyn-sayac">${sayac} <small>· tamamlanan <span id="joTamam">${biten}</span></small></span>
+      <span class="oyn-ipucu"><kbd>1</kbd>–<kbd>9</kbd> puan · <kbd>0</kbd> = 10 · <kbd>↑</kbd> <kbd>↓</kbd> ölçüt · <kbd>←</kbd> <kbd>→</kbd> aday · <kbd>Esc</kbd> liste</span>
+    </div>`;
+
+  if (o.i >= n){
+    const ilkEksik = o.ids.findIndex(id => !puanTamam(benimPuan(id)));
+    el('icerik').innerHTML = ust(`${n} / ${n}`) + `<div class="bos">
+        ${ilkEksik < 0 ? 'Bütün adayları puanladın, teşekkürler.' : 'Listenin sonuna geldin.'}<br>
+        <span style="font-size:13.5px">Tamamlanan ${biten} · Eksik ${n - biten}</span><br>
+        <span id="joKayit" style="font-size:13px"></span><br><br>
+        <button class="btn btn-sm" data-oyn="onceki">← Son adaya dön</button>
+        ${ilkEksik >= 0 ? `<button class="btn btn-sm btn-kirmizi" data-oyn="eksik">İlk eksik adaya git</button>` : ''}
+        <button class="btn btn-sm btn-koyu" data-oyn="kapat">Listeye dön</button>
+      </div>`;
+    juriBagla(null);
+    juriDurum();
+    return;
+  }
+
+  const k = st.basvurular.find(x => x.id === o.ids[o.i]);
+  const p = benimPuan(k.id) || {};
+  o.olcut = Math.max(0, OLCUTLER.findIndex(([a]) => p[a] == null));
+
+  el('icerik').innerHTML = ust(`${o.i + 1} <small>/ ${n}</small>`) + `
+    <div class="oyn oyn-juri">
+      <div class="jo-sol">
+        <div class="jo-video">${videoKutu(k, true)}</div>
+        <div class="jo-alt">
+          <div class="alan jo-not">
+            <label for="joNot">Notunuz <span style="text-transform:none;letter-spacing:0;font-weight:400">— isteğe bağlı</span></label>
+            <textarea id="joNot" rows="2">${kacar(p.notlar || '')}</textarea>
+          </div>
+          <div>
+            <div class="jo-kayit" id="joKayit"></div>
+            <div class="oyn-gez">
+              <button class="btn btn-sm" data-oyn="onceki" ${o.i === 0 ? 'disabled' : ''}>← Önceki</button>
+              <button class="btn btn-sm" id="joSonraki" data-oyn="sonraki">Sonraki →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="oyn-bilgi">
+        <div class="jo-kim">
+          <div class="no">${String(k.sira_no).padStart(3,'0')}</div>
+          <div>
+            <div class="kart-ad">${kacar(k.ad)}</div>
+            <div class="kart-alt">${kacar(k.sehir)} · ${kacar(k.program_adi)}</div>
+          </div>
+        </div>
+        <details class="jo-tanitim"><summary>Kendini nasıl anlatıyor</summary><p>${kacar(k.tanitim)}</p></details>
+        <div id="joPuan">${juriSatirlar(k)}</div>
+      </div>
+    </div>`;
+  juriBagla(k);
+  juriDurum();
+}
+
+function juriBagla(k){
+  el('icerik').onclick = ev => {
+    const b = ev.target.closest('[data-jp],[data-oyn],[data-olcutno]');
+    if (!b || !st.oynat) return;
+    if (b.tagName === 'A') ev.preventDefault();
+    if (b.dataset.jp && k) puanVer(k, +b.dataset.j, +b.dataset.jp);
+    else if (b.dataset.oyn === 'kaydet') juriKaydet();
+    else if (b.dataset.oyn === 'eksik'){
+      st.oynat.i = st.oynat.ids.findIndex(id => !puanTamam(benimPuan(id)));
+      ciz();
+    }
+    else if (b.dataset.oyn) oynatGit(b.dataset.oyn);
+    else if (k){ st.oynat.olcut = +b.dataset.olcutno; el('joPuan').innerHTML = juriSatirlar(k); }
+  };
+  const not = el('joNot');
+  if (not && k) not.addEventListener('input', () => {
+    benimSatir(k.id).notlar = not.value;
+    puanKirlet(k.id, 700);
+  });
+}
+
+/* Puan verince imleç sıradaki boş ölçüte geçer; video yeniden yüklenmez. */
+function puanVer(k, j, deger){
+  const p = benimSatir(k.id);
+  p[OLCUTLER[j][0]] = deger;
+  const bos = s => OLCUTLER.findIndex(([a], i) => i >= s && p[a] == null);
+  const sonraki = bos(j + 1) >= 0 ? bos(j + 1) : bos(0);
+  st.oynat.olcut = sonraki >= 0 ? sonraki : j;
+  el('joPuan').innerHTML = juriSatirlar(k);
+  puanKirlet(k.id, 300);
+}
+
+function juriTus(ev){
+  if (ev.key === 'Escape' && ev.target.tagName === 'TEXTAREA'){ ev.target.blur(); ev.preventDefault(); return; }
+  if (ev.metaKey || ev.ctrlKey || ev.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(ev.target.tagName)) return;
+
+  const o = st.oynat;
+  const k = st.basvurular.find(x => x.id === o.ids[o.i]);
+  const deger = ev.key === '0' ? 10 : /^[1-9]$/.test(ev.key) ? +ev.key : 0;
+
+  if (ev.key === 'ArrowRight')     oynatGit('sonraki');
+  else if (ev.key === 'ArrowLeft') oynatGit('onceki');
+  else if (ev.key === 'Escape')    oynatGit('kapat');
+  else if (!k) return;
+  else if (deger){ if (!ev.repeat) puanVer(k, o.olcut, deger); }
+  else if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp'){
+    o.olcut = Math.min(OLCUTLER.length - 1, Math.max(0, o.olcut + (ev.key === 'ArrowDown' ? 1 : -1)));
+    el('joPuan').innerHTML = juriSatirlar(k);
+  }
+  else return;
+  ev.preventDefault();
+}
+
+window.addEventListener('beforeunload', ev => {
+  if (kirli.size || kayitSuruyor) ev.preventDefault();
+});
 
 /* ---------- JÜRİ SONUÇLARI (eleyici) ---------- */
 function cizSonuc(){
@@ -608,7 +830,8 @@ function cizSonuc(){
   }
 
   const satirlar = gecenler.map(k => {
-    const p = st.puanlar.filter(x => x.basvuru_id === k.id);
+    /* Puanlar otomatik kaydedildiği için yarım kalan oylama sıralamaya girmez. */
+    const p = st.puanlar.filter(x => x.basvuru_id === k.id && puanTamam(x));
     const ortalamalar = p.map(x => {
       const d = OLCUTLER.map(([a]) => x[a]).filter(v => v != null);
       return d.length ? d.reduce((t,v) => t+v, 0) / d.length : null;
