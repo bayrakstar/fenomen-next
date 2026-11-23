@@ -31,9 +31,16 @@ const DURUMLAR = [
   ['elendi',   'Elendi']
 ];
 
+/* Jüri ekranındaki ve sonuç tablosundaki aday grupları. */
+const JURI_GRUP = [
+  ['gecti',    'Geçti'],
+  ['kararsiz', 'Kararsız'],
+  ['elendi',   'Elendi']
+];
+
 let st = {
   jeton: null, tazeleme: null, uid: null, rol: null, ad: null, eposta: null,
-  sekme: null, suzgec: 'yeni', arama: '',
+  sekme: null, suzgec: 'yeni', arama: '', sonucGrup: 'gecti',
   oynat: null,   /* sırayla izle: { ids: [...], i: 0 } — girerken süzgecin anlık listesi */
   basvurular: [], puanlar: [], kisiler: []
 };
@@ -182,13 +189,15 @@ async function baslat(){
 function sekmeleriKur(){
   const liste = st.rol === 'eleyici'
     ? [['eleme','Eleme'], ...(st.sonucGorur ? [['sonuc','Jüri sonuçları']] : []), ['kisiler','Kişiler']]
-    : [['degerlendir','Değerlendirme']];
+    : JURI_GRUP;
   st.sekme = liste[0][0];
   el('sekmeler').innerHTML = liste
     .map(([id,ad]) => `<button class="sekme" data-sekme="${id}">${ad}</button>`).join('');
   el('sekmeler').querySelectorAll('.sekme').forEach(b =>
     b.addEventListener('click', () => {
+      if (juriSekmede()) juriKaydet();
       st.sekme = b.dataset.sekme; st.oynat = null;
+      el('icerik').onclick = null;
       /* Jüriler puan verdikçe sıralama değişir; sekme her açılışta taze veri çeker. */
       if (st.sekme === 'sonuc') veriYukle(); else ciz();
     }));
@@ -209,13 +218,19 @@ async function veriYukle(){
   ciz();
 }
 
+const juriSekmede = () => JURI_GRUP.some(([id]) => id === st.sekme);
+const grupListe = g => st.basvurular.filter(k => k.durum === g);
+
 /* ---------- çizim ---------- */
 function ciz(){
-  el('sekmeler').querySelectorAll('.sekme').forEach(b =>
-    b.classList.toggle('aktif', b.dataset.sekme === st.sekme));
+  el('sekmeler').querySelectorAll('.sekme').forEach(b => {
+    b.classList.toggle('aktif', b.dataset.sekme === st.sekme);
+    const g = st.rol === 'juri' && JURI_GRUP.find(([id]) => id === b.dataset.sekme);
+    if (g) b.textContent = `${g[1]} · ${grupListe(g[0]).length}`;
+  });
 
   if (st.sekme === 'eleme')       st.oynat ? cizOynat() : cizEleme();
-  if (st.sekme === 'degerlendir') st.oynat ? cizJuriOynat() : cizDegerlendirme();
+  if (juriSekmede())              st.oynat ? cizJuriOynat() : cizDegerlendirme();
   if (st.sekme === 'sonuc')       cizSonuc();
   if (st.sekme === 'kisiler')     cizKisiler();
 }
@@ -372,7 +387,7 @@ function kartEleme(k){
 
 async function durumVer(id, durum){
   const k = st.basvurular.find(x => x.id === id);
-  if (durum !== 'gecti' && k && k.puan_sayisi > 0){
+  if (durum === 'yeni' && k && k.puan_sayisi > 0){
     if (!confirm(`${k.ad} için ${k.puan_sayisi} jüri puanı girilmiş. Listeden çıkarırsanız jüri bu adayı göremeyecek. Devam edilsin mi?`)) return;
   }
 
@@ -458,7 +473,7 @@ function oynatBagla(){
 }
 
 async function oynatGit(ne){
-  const juri = st.sekme === 'degerlendir';
+  const juri = juriSekmede();
   if (juri){ clearTimeout(kayitZaman); }
   if (ne === 'kapat'){
     /* Kaydedilemeyen puan varken listeye dönülmez; ekranda hata kalır. */
@@ -474,7 +489,7 @@ async function oynatGit(ne){
 }
 
 document.addEventListener('keydown', ev => {
-  if (st.oynat && st.sekme === 'degerlendir') return juriTus(ev);
+  if (st.oynat && juriSekmede()) return juriTus(ev);
   if (!st.oynat || st.sekme !== 'eleme') return;
   if (ev.metaKey || ev.ctrlKey || ev.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(ev.target.tagName)) return;
   const k = st.basvurular.find(x => x.id === st.oynat.ids[st.oynat.i]);
@@ -512,25 +527,23 @@ function suzgecBagla(){
 
 /* ---------- DEĞERLENDİRME (jüri) ---------- */
 function cizDegerlendirme(){
-  if (!st.basvurular.length){
-    el('icerik').innerHTML = `<div class="bos">
-      Değerlendirilecek aday henüz yok.<br>
-      <span style="font-size:13.5px">Ön eleme tamamlandığında adaylar burada görünecek.</span>
-    </div>`;
+  const liste = grupListe(st.sekme);
+  if (!liste.length){
+    el('icerik').innerHTML = `<div class="bos">Bu sekmede aday yok.</div>`;
     return;
   }
 
-  const biten = st.basvurular.filter(k => puanTamam(benimPuan(k.id))).length;
-  const kalan = st.basvurular.length - biten;
+  const biten = liste.filter(k => puanTamam(benimPuan(k.id))).length;
+  const kalan = liste.length - biten;
   const basla = !biten ? 'Sırayla izle ve puanla' : kalan ? 'Kaldığın yerden devam et' : 'Baştan gözden geçir';
 
   el('icerik').innerHTML =
-    `<div class="uyari jo-bas"><span>Toplam <b>${st.basvurular.length}</b> aday · puanı tamamlanan: <b>${biten}</b> · kalan: <b>${kalan}</b></span>
+    `<div class="uyari jo-bas"><span>Toplam <b>${liste.length}</b> aday · puanı tamamlanan: <b>${biten}</b> · kalan: <b>${kalan}</b></span>
       <button class="btn btn-sm btn-kirmizi" id="juriBasla">▶ ${basla}</button></div>` +
-    st.basvurular.map(kartJuri).join('');
+    liste.map(kartJuri).join('');
 
   el('juriBasla').addEventListener('click', () => {
-    const ids = st.basvurular.map(k => k.id);
+    const ids = liste.map(k => k.id);
     st.oynat = { ids, i: Math.max(0, ids.findIndex(id => !puanTamam(benimPuan(id)))), olcut: 0 };
     ciz(); scrollTo(0, 0);
   });
@@ -830,9 +843,15 @@ window.addEventListener('beforeunload', ev => {
 
 /* ---------- JÜRİ SONUÇLARI (eleyici) ---------- */
 function cizSonuc(){
-  const gecenler = st.basvurular.filter(k => k.durum === 'gecti');
-  if (!gecenler.length){
-    el('icerik').innerHTML = '<div class="bos">Henüz jüriye gönderilmiş aday yok.<br><span style="font-size:13.5px">Eleme sekmesinden "Geçti" dediğiniz adaylar buraya düşer.</span></div>';
+  const adaylar = grupListe(st.sonucGrup);
+  const grupTus = `<div class="suzgec">${JURI_GRUP.map(([id, ad]) =>
+    `<button class="sz ${st.sonucGrup === id ? 'aktif' : ''}" data-grup="${id}">${ad}<b>${grupListe(id).length}</b></button>`).join('')}</div>`;
+  const grupBagla = () => el('icerik').querySelectorAll('[data-grup]').forEach(b =>
+    b.addEventListener('click', () => { st.sonucGrup = b.dataset.grup; cizSonuc(); }));
+
+  if (!adaylar.length){
+    el('icerik').innerHTML = grupTus + '<div class="bos">Bu grupta aday yok.</div>';
+    grupBagla();
     return;
   }
 
@@ -841,7 +860,7 @@ function cizSonuc(){
   const juriAd = j => kacar(j.ad || j.eposta);
   const juriOrt = x => OLCUTLER.reduce((t,[a]) => t + x[a], 0) / OLCUTLER.length;
 
-  const satirlar = gecenler.map(k => {
+  const satirlar = adaylar.map(k => {
     const p = st.puanlar.filter(x => x.basvuru_id === k.id && juriler.some(j => j.uid === x.juri_uid));
     /* Puanlar otomatik kaydedildiği için yarım kalan oylama sıralamaya girmez. */
     const ortalamalar = p.filter(puanTamam).map(juriOrt);
@@ -876,7 +895,7 @@ function cizSonuc(){
       }).join('')}</tbody>
     </table>`;
 
-  el('icerik').innerHTML = `
+  el('icerik').innerHTML = grupTus + `
     <div class="uyari jo-bas"><span>Ortalamaya göre sıralı. Altı ölçütü tamamlanmamış puan ortalamaya girmez. <b>Ayrışma</b>, jürinin en yüksek ve en düşük puanı arasındaki farktır.</span>
       <button class="btn btn-sm" id="sonucYenile">↻ Yenile</button></div>
     <div class="tablo-sar"><table class="sn-tablo">
@@ -888,7 +907,7 @@ function cizSonuc(){
         </tr>
         <tr class="sn-ilerleme">
           <td class="sn-aday">Tamamladığı aday</td>
-          ${juriler.map(j => `<td class="sayi">${gecenler.filter(k => puanTamam(st.puanlar.find(x => x.basvuru_id === k.id && x.juri_uid === j.uid))).length}/${gecenler.length}</td>`).join('')}
+          ${juriler.map(j => `<td class="sayi">${adaylar.filter(k => puanTamam(st.puanlar.find(x => x.basvuru_id === k.id && x.juri_uid === j.uid))).length}/${adaylar.length}</td>`).join('')}
           <td colspan="4"></td>
         </tr>
       </thead>
@@ -904,6 +923,7 @@ function cizSonuc(){
       <tr class="gizli" id="det-${s.k.id}"><td colspan="${juriler.length + 5}">${detay(s)}</td></tr>`).join('')}</tbody>
     </table></div>`;
 
+  grupBagla();
   el('sonucYenile').addEventListener('click', veriYukle);
   el('icerik').querySelectorAll('[data-detay]').forEach(b =>
     b.addEventListener('click', () => el('det-' + b.dataset.detay).classList.toggle('gizli')));
