@@ -116,7 +116,7 @@ function oturumYaz(d){
 }
 
 function cikis(){
-  st = { ...st, jeton:null, tazeleme:null, uid:null, rol:null, oynat:null, basvurular:[], puanlar:[], kisiler:[] };
+  st = { ...st, jeton:null, tazeleme:null, uid:null, rol:null, oynat:null, sonucGorur:false, yetkililer:[], basvurular:[], puanlar:[], kisiler:[] };
   kirli.clear(); clearTimeout(kayitZaman); el('icerik').onclick = null;
   try { localStorage.removeItem('next_oturum'); } catch {}
   el('panel').classList.add('gizli');
@@ -154,7 +154,7 @@ el('cikisBtn').addEventListener('click', async () => {
 
 /* ---------- açılış ---------- */
 async function baslat(){
-  const c = await istek('/rest/v1/fenomen_next_yetkililer?select=uid,rol,ad,eposta,aktif');
+  const c = await istek('/rest/v1/fenomen_next_yetkililer?select=uid,rol,ad,eposta,aktif,sonuc_gorur');
   const satirlar = c.ok ? await c.json() : [];
   const ben = satirlar.find(s => s.uid === st.uid);
 
@@ -167,6 +167,7 @@ async function baslat(){
   }
 
   st.rol = ben.rol; st.ad = ben.ad; st.eposta = ben.eposta;
+  st.sonucGorur = !!ben.sonuc_gorur;
   st.suzgec = st.rol === 'eleyici' ? 'yeni' : 'hepsi';
 
   el('girisEkran').style.display = 'none';
@@ -180,25 +181,31 @@ async function baslat(){
 
 function sekmeleriKur(){
   const liste = st.rol === 'eleyici'
-    ? [['eleme','Eleme'], ['sonuc','Jüri sonuçları'], ['kisiler','Kişiler']]
+    ? [['eleme','Eleme'], ...(st.sonucGorur ? [['sonuc','Jüri sonuçları']] : []), ['kisiler','Kişiler']]
     : [['degerlendir','Değerlendirme']];
   st.sekme = liste[0][0];
   el('sekmeler').innerHTML = liste
     .map(([id,ad]) => `<button class="sekme" data-sekme="${id}">${ad}</button>`).join('');
   el('sekmeler').querySelectorAll('.sekme').forEach(b =>
-    b.addEventListener('click', () => { st.sekme = b.dataset.sekme; st.oynat = null; ciz(); }));
+    b.addEventListener('click', () => {
+      st.sekme = b.dataset.sekme; st.oynat = null;
+      /* Jüriler puan verdikçe sıralama değişir; sekme her açılışta taze veri çeker. */
+      if (st.sekme === 'sonuc') veriYukle(); else ciz();
+    }));
 }
 
 async function veriYukle(){
   el('icerik').innerHTML = '<div class="yukleniyor">Yükleniyor…</div>';
   const gorunum = st.rol === 'eleyici' ? 'next_eleme' : 'next_juri';
 
-  const [b, p] = await Promise.all([
+  const [b, p, y] = await Promise.all([
     istek(`/rest/v1/${gorunum}?select=*&order=sira_no`),
-    istek('/rest/v1/fenomen_next_puanlar?select=*')
+    istek('/rest/v1/fenomen_next_puanlar?select=*'),
+    st.sonucGorur ? istek('/rest/v1/fenomen_next_yetkililer?select=uid,rol,ad,eposta') : null
   ]);
   st.basvurular = b.ok ? await b.json() : [];
   st.puanlar    = p.ok ? await p.json() : [];
+  if (y && y.ok) st.yetkililer = await y.json();
   ciz();
 }
 
@@ -829,39 +836,77 @@ function cizSonuc(){
     return;
   }
 
-  const satirlar = gecenler.map(k => {
-    /* Puanlar otomatik kaydedildiği için yarım kalan oylama sıralamaya girmez. */
-    const p = st.puanlar.filter(x => x.basvuru_id === k.id && puanTamam(x));
-    const ortalamalar = p.map(x => {
-      const d = OLCUTLER.map(([a]) => x[a]).filter(v => v != null);
-      return d.length ? d.reduce((t,v) => t+v, 0) / d.length : null;
-    }).filter(v => v != null);
+  const juriler = st.yetkililer.filter(y => y.rol === 'juri')
+    .sort((a,b) => (a.ad || a.eposta).localeCompare(b.ad || b.eposta, 'tr'));
+  const juriAd = j => kacar(j.ad || j.eposta);
+  const juriOrt = x => OLCUTLER.reduce((t,[a]) => t + x[a], 0) / OLCUTLER.length;
 
+  const satirlar = gecenler.map(k => {
+    const p = st.puanlar.filter(x => x.basvuru_id === k.id && juriler.some(j => j.uid === x.juri_uid));
+    /* Puanlar otomatik kaydedildiği için yarım kalan oylama sıralamaya girmez. */
+    const ortalamalar = p.filter(puanTamam).map(juriOrt);
     const ort = ortalamalar.length
       ? ortalamalar.reduce((t,v) => t+v, 0) / ortalamalar.length : null;
     const fark = ortalamalar.length > 1
       ? Math.max(...ortalamalar) - Math.min(...ortalamalar) : 0;
 
-    return { k, adet: ortalamalar.length, ort, fark };
-  }).sort((a,b) => (b.ort ?? -1) - (a.ort ?? -1));
+    return { k, p, adet: ortalamalar.length, ort, fark };
+  }).sort((a,b) => (b.ort ?? -1) - (a.ort ?? -1) || b.adet - a.adet || a.k.sira_no - b.k.sira_no);
+
+  /* Ortalaması eşit olanlar aynı sırayı paylaşır. */
+  satirlar.forEach((s, i) => {
+    const o = satirlar[i - 1];
+    s.sira = s.ort == null ? null : o && Math.abs(o.ort - s.ort) < 1e-9 ? o.sira : i + 1;
+  });
+
+  const hucre = (s, j) => {
+    const x = s.p.find(v => v.juri_uid === j.uid);
+    if (!x || !OLCUTLER.some(([a]) => x[a] != null)) return '<span class="sn-yok">—</span>';
+    return puanTamam(x) ? `<b>${juriOrt(x).toFixed(1)}</b>` : '<span class="sn-yarim">yarım</span>';
+  };
+
+  const detay = s => `<table class="sn-detay">
+      <thead><tr><th>Jüri</th>${OLCUTLER.map(([,ad]) => `<th class="sayi">${ad}</th>`).join('')}<th class="sayi">Ort.</th><th>Not</th></tr></thead>
+      <tbody>${juriler.map(j => {
+        const x = s.p.find(v => v.juri_uid === j.uid) || {};
+        return `<tr><td>${juriAd(j)}</td>
+          ${OLCUTLER.map(([a]) => `<td class="sayi">${x[a] ?? '—'}</td>`).join('')}
+          <td class="sayi"><b>${puanTamam(x) ? juriOrt(x).toFixed(1) : '—'}</b></td>
+          <td class="sn-not">${kacar(x.notlar || '')}</td></tr>`;
+      }).join('')}</tbody>
+    </table>`;
 
   el('icerik').innerHTML = `
-    <div class="uyari">Ortalamaya göre sıralı. <b>Ayrışma</b> sütunu jürinin en yüksek ve en düşük puanı arasındaki farktır — büyükse o aday tartışmalı demektir.</div>
-    <div class="tablo-sar"><table>
-      <thead><tr>
-        <th class="sayi">No</th><th>Aday</th><th>Şehir</th><th>Program</th>
-        <th class="sayi">Puanlayan</th><th class="sayi">Ortalama</th><th class="sayi">Ayrışma</th>
-      </tr></thead>
+    <div class="uyari jo-bas"><span>Ortalamaya göre sıralı. Altı ölçütü tamamlanmamış puan ortalamaya girmez. <b>Ayrışma</b>, jürinin en yüksek ve en düşük puanı arasındaki farktır.</span>
+      <button class="btn btn-sm" id="sonucYenile">↻ Yenile</button></div>
+    <div class="tablo-sar"><table class="sn-tablo">
+      <thead>
+        <tr>
+          <th class="sn-aday">Sıra · Aday</th>
+          ${juriler.map(j => `<th class="sayi sn-juri">${juriAd(j)}</th>`).join('')}
+          <th class="sayi">Puanlayan</th><th class="sayi">Ortalama</th><th class="sayi">Ayrışma</th><th></th>
+        </tr>
+        <tr class="sn-ilerleme">
+          <td class="sn-aday">Tamamladığı aday</td>
+          ${juriler.map(j => `<td class="sayi">${gecenler.filter(k => puanTamam(st.puanlar.find(x => x.basvuru_id === k.id && x.juri_uid === j.uid))).length}/${gecenler.length}</td>`).join('')}
+          <td colspan="4"></td>
+        </tr>
+      </thead>
       <tbody>${satirlar.map(s => `<tr>
-        <td class="sayi">${String(s.k.sira_no).padStart(3,'0')}</td>
-        <td>${kacar(s.k.ad)}</td>
-        <td>${kacar(s.k.sehir)}</td>
-        <td>${kacar(s.k.program_adi)}</td>
-        <td class="sayi">${s.adet}</td>
-        <td class="sayi"><b>${s.ort != null ? s.ort.toFixed(1) : '—'}</b></td>
+        <td class="sn-aday"><span class="sn-sira">${s.sira ?? '—'}</span><b>${kacar(s.k.ad)}</b>
+          <small>${String(s.k.sira_no).padStart(3,'0')} · ${kacar(s.k.program_adi)}</small></td>
+        ${juriler.map(j => `<td class="sayi">${hucre(s, j)}</td>`).join('')}
+        <td class="sayi">${s.adet}/${juriler.length}</td>
+        <td class="sayi"><b>${s.ort != null ? s.ort.toFixed(2) : '—'}</b></td>
         <td class="sayi">${s.adet > 1 ? s.fark.toFixed(1) : '—'}</td>
-      </tr>`).join('')}</tbody>
+        <td><button class="btn btn-sm btn-koyu" data-detay="${s.k.id}">Ölçütler</button></td>
+      </tr>
+      <tr class="gizli" id="det-${s.k.id}"><td colspan="${juriler.length + 5}">${detay(s)}</td></tr>`).join('')}</tbody>
     </table></div>`;
+
+  el('sonucYenile').addEventListener('click', veriYukle);
+  el('icerik').querySelectorAll('[data-detay]').forEach(b =>
+    b.addEventListener('click', () => el('det-' + b.dataset.detay).classList.toggle('gizli')));
 }
 
 /* ---------- KİŞİLER (eleyici) ---------- */
