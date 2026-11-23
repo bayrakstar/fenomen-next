@@ -183,7 +183,7 @@ function sekmeleriKur(){
   const liste = st.rol === 'eleyici'
     ? [['eleme','Eleme'], ...(st.sonucGorur ? [['sonuc','Jüri sonuçları']] : []), ['kisiler','Kişiler']]
     : [['degerlendir','Değerlendirme']];
-  st.sekme = ornekMi() ? 'sonuc' : liste[0][0];
+  st.sekme = liste[0][0];
   el('sekmeler').innerHTML = liste
     .map(([id,ad]) => `<button class="sekme" data-sekme="${id}">${ad}</button>`).join('');
   el('sekmeler').querySelectorAll('.sekme').forEach(b =>
@@ -206,7 +206,6 @@ async function veriYukle(){
   st.basvurular = b.ok ? await b.json() : [];
   st.puanlar    = p.ok ? await p.json() : [];
   if (y && y.ok) st.yetkililer = await y.json();
-  if (ornekMi()) st.puanlar = ornekPuanlar();
   ciz();
 }
 
@@ -829,37 +828,6 @@ window.addEventListener('beforeunload', ev => {
   if (kirli.size || kayitSuruyor) ev.preventDefault();
 });
 
-/* ---------- ÖRNEK GÖRÜNÜM (panel.html?ornek=1) ----------
-   Yalnız sonuç görme yetkisi olan hesapta, bu tarayıcıda uydurma puan gösterir.
-   Veritabanına yazmaz; jüriler görmez. İş bitince bu blok kaldırılacak. */
-const ornekMi = () => st.sonucGorur && new URLSearchParams(location.search).has('ornek');
-
-function ornekPuanlar(){
-  const sayi = (a, b) => {
-    let x = (a * 7919 + b * 104729 + 31337) % 2147483647;
-    for (let i = 0; i < 3; i++) x = (x * 16807) % 2147483647;
-    return x;
-  };
-  const adaylar = st.basvurular.filter(k => k.durum === 'gecti');
-  const juriler = st.yetkililer.filter(y => y.rol === 'juri')
-    .sort((a,b) => (a.ad || a.eposta).localeCompare(b.ad || b.eposta, 'tr'));
-  const oran = [1, 1, .9, .8, .7], egilim = [-.4, .3, 0, .6, -.2], liste = [];
-
-  juriler.forEach((j, n) => {
-    const biten = Math.round(adaylar.length * oran[n % 5]);
-    adaylar.slice(0, biten + 1).forEach((k, s) => {
-      const temel = 5.2 + (sayi(k.sira_no, 1) % 34) / 10 + egilim[n % 5];
-      const satir = { basvuru_id: k.id, juri_uid: j.uid, notlar: null };
-      OLCUTLER.forEach(([a], o) => {
-        satir[a] = s === biten && o > 2 ? null
-          : Math.max(1, Math.min(10, Math.round(temel + (sayi(k.sira_no * (n + 2), o + 3) % 31 - 15) / 10)));
-      });
-      liste.push(satir);
-    });
-  });
-  return liste;
-}
-
 /* ---------- JÜRİ SONUÇLARI (eleyici) ---------- */
 function cizSonuc(){
   const gecenler = st.basvurular.filter(k => k.durum === 'gecti');
@@ -909,7 +877,6 @@ function cizSonuc(){
     </table>`;
 
   el('icerik').innerHTML = `
-    ${ornekMi() ? `<div class="uyari" style="background:var(--kirmizi);color:#fff"><b>ÖRNEK GÖRÜNÜM</b> · Jüri ve aday adları gerçek, <b>puanlar uydurma</b>. <a href="panel.html" style="font-weight:700">Gerçek sonuçlara dön →</a></div>` : ''}
     <div class="uyari jo-bas"><span>Ortalamaya göre sıralı. Altı ölçütü tamamlanmamış puan ortalamaya girmez. <b>Ayrışma</b>, jürinin en yüksek ve en düşük puanı arasındaki farktır.</span>
       <button class="btn btn-sm" id="sonucYenile">↻ Yenile</button></div>
     <div class="tablo-sar"><table class="sn-tablo">
