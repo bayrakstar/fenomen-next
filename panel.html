@@ -91,12 +91,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--murekkep
 .onay-iz .var{color:var(--yesil)}
 
 /* ---- puanlama ---- */
-.puan-izgara{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 20px;margin-bottom:14px}
-.puan-satir{display:flex;align-items:center;gap:11px}
-.puan-ad{font-size:13.5px;color:var(--murekkep-soft);flex:1}
-.puan-tus{display:flex;gap:3px}
-.pt{width:25px;height:25px;border:1px solid var(--cizgi);background:#fff;border-radius:6px;font-size:11.5px;cursor:pointer;padding:0;color:var(--gri);font-family:'Archivo',sans-serif;font-weight:700}
-.pt.secili{background:var(--kirmizi);border-color:var(--kirmizi);color:#fff}
 .puan-ort{font-family:'Archivo',sans-serif;font-weight:800;font-size:26px}
 .puan-ort small{font-size:12px;color:var(--gri);font-weight:400;font-family:'Roboto',sans-serif}
 
@@ -117,7 +111,8 @@ td.sayi,th.sayi{text-align:right;font-variant-numeric:tabular-nums}
 .sn-ilerleme td{font-size:11.5px;color:var(--gri);background:var(--kagit-2)}
 .sn-tablo .sn-ilerleme .sn-aday{background:var(--kagit-2)}
 .sn-yok{color:var(--cizgi)}
-.sn-yarim{color:var(--sari);font-size:11px}
+.sn-gecti{color:var(--yesil)}
+.sn-gecmedi{color:var(--kirmizi)}
 .sn-detay{min-width:760px;font-size:12.5px;background:#fff;border-radius:8px}
 .sn-detay th{font-size:9.5px;letter-spacing:.04em;line-height:1.25}
 .sn-detay th,.sn-detay td{padding:7px 8px}
@@ -144,11 +139,13 @@ td.sayi,th.sayi{text-align:right;font-variant-numeric:tabular-nums}
 .oyn-oy .btn.gecti.secili{background:var(--yesil);border-color:var(--yesil);color:#fff}
 .oyn-oy .btn.kararsiz.secili{background:var(--sari);border-color:var(--sari);color:#fff}
 .oyn-oy .btn.elendi.secili{background:var(--murekkep);border-color:var(--murekkep);color:#fff}
+.oyn-oy.iki{grid-template-columns:1fr 1fr}
+.oyn-oy .btn.gecmedi.secili{background:var(--kirmizi);border-color:var(--kirmizi);color:#fff}
 .oyn-oy .btn.secili kbd{background:transparent;color:inherit;border-color:rgba(255,255,255,.5)}
 .oyn-gez{display:flex;gap:8px;margin-top:10px}
 .oyn-gez .btn{flex:1}
 
-/* ---- jüri: sırayla izle ve puanla ---- */
+/* ---- jüri: sırayla izle ve karar ver ---- */
 .jo-bas{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .jo-bas .btn{margin-left:auto}
 .jo-sol{position:sticky;top:78px}
@@ -157,12 +154,6 @@ td.sayi,th.sayi{text-align:right;font-variant-numeric:tabular-nums}
 .jo-tanitim{margin:10px 0 8px;font-size:13px;color:var(--gri)}
 .jo-tanitim summary{cursor:pointer}
 .jo-tanitim p{margin:6px 0 0;max-height:130px;overflow:auto;white-space:pre-wrap;color:var(--murekkep-soft)}
-.jo-satir{padding:6px 8px;border-radius:9px;border:1px solid transparent;cursor:pointer}
-.jo-satir.aktif{background:#FFF1F0;border-color:#FFC9C6}
-.jo-ad{display:flex;justify-content:space-between;font-size:13px;color:var(--murekkep-soft);margin-bottom:3px}
-.jo-ad b{font-family:'Archivo',sans-serif;font-weight:800;color:var(--murekkep)}
-.jo-tus{display:flex;gap:3px}
-.jo-tus .pt{flex:1;width:auto;height:28px}
 .jo-not{margin:0}
 .jo-not textarea{padding:8px 10px;font-size:14px}
 .jo-kayit{font-size:12.5px;color:var(--gri);min-height:20px}
@@ -176,11 +167,9 @@ td.sayi,th.sayi{text-align:right;font-variant-numeric:tabular-nums}
   .jo-alt{order:3;grid-template-columns:1fr;margin-top:0}
   .jo-video .video{max-height:34vh !important}
   .jo-video .video-not,.jo-video .video-ac{display:none}
-  .jo-tus .pt{height:36px}
   .oyn{grid-template-columns:1fr}
   .oyn-ipucu{display:none}
   .kart-govde{grid-template-columns:1fr}
-  .puan-izgara{grid-template-columns:1fr}
   .ara{margin-left:0;max-width:none;width:100%}
 }
 </style>
@@ -222,6 +211,6 @@ td.sayi,th.sayi{text-align:right;font-variant-numeric:tabular-nums}
   </div>
 </div>
 
-<script src="js/panel.js?v=5d6eb29ccd"></script>
+<script src="js/panel.js?v=b91049e312"></script>
 </body>
 </html>

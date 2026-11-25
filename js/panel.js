@@ -2,7 +2,7 @@
    ------------------------------------------------------------------
    İki rol var:
      eleyici → bütün başvuruları görür, "geçti / kararsız / elendi" der
-     jüri    → yalnızca "geçti" işaretlenenleri görür, puanlar
+     jüri    → eleyicinin işaretlediği adayları görür, "geçti / geçmedi" der
 
    Rol denetimi TARAYICIDA DEĞİL sunucuda. Buradaki gizlemeler sadece
    arayüzü sadeleştirmek için; veriyi görünümler ve RLS koruyor.
@@ -14,14 +14,12 @@ const VERI = {
   anahtar: 'sb_publishable_vRdeq7GR8RblkbUe60SrSw_aFkl6xhe'
 };
 
-const OLCUTLER = [
-  ['ses_anlatim',  'Ses ve anlatım'],
-  ['ozgunluk',     'Özgünlük'],
-  ['enerji',       'Enerji'],
-  ['dogaclama',    'Doğaçlama'],
-  ['muzik_kultur', 'Müzik ve kültür bilgisi'],
-  ['kamera',       'Kamera performansı']
+/* Jüri puan vermez, yalnız karar verir. Eski 1-10 ölçüt sütunları tabloda duruyor, kullanılmıyor. */
+const KARARLAR = [
+  ['gecti',   'Geçti'],
+  ['gecmedi', 'Geçmedi']
 ];
+const KARAR_AD = Object.fromEntries(KARARLAR);
 
 const DURUMLAR = [
   ['hepsi',    'Hepsi'],
@@ -155,7 +153,7 @@ el('girisForm').addEventListener('submit', async ev => {
 });
 
 el('cikisBtn').addEventListener('click', async () => {
-  if (!(await juriKaydet()) && !confirm('Son puanlar kaydedilemedi. Yine de çıkılsın mı?')) return;
+  if (!(await juriKaydet()) && !confirm('Son kararlar kaydedilemedi. Yine de çıkılsın mı?')) return;
   cikis();
 });
 
@@ -350,7 +348,7 @@ function kartEleme(k){
         <div class="kart-alt">${kacar(k.sehir)}${y!=null?` · ${y} yaşında`:''} · ${tarih(k.olusturuldu)} · ${kacar(k.eposta)}</div>
       </div>
       <div class="kart-sag">
-        ${puanli ? `<span class="durum">${k.puan_sayisi} jüri puanı</span>` : ''}
+        ${puanli ? `<span class="durum">${k.puan_sayisi} jüri oyu</span>` : ''}
         <span class="durum ${d}">${({yeni:'Bakılmadı',gecti:'Geçti',kararsiz:'Kararsız',elendi:'Elendi'})[d]}</span>
       </div>
     </div>
@@ -388,7 +386,7 @@ function kartEleme(k){
 async function durumVer(id, durum){
   const k = st.basvurular.find(x => x.id === id);
   if (durum === 'yeni' && k && k.puan_sayisi > 0){
-    if (!confirm(`${k.ad} için ${k.puan_sayisi} jüri puanı girilmiş. Listeden çıkarırsanız jüri bu adayı göremeyecek. Devam edilsin mi?`)) return;
+    if (!confirm(`${k.ad} için ${k.puan_sayisi} jüri oyu verilmiş. Listeden çıkarırsanız jüri bu adayı göremeyecek. Devam edilsin mi?`)) return;
   }
 
   const c = await istek('/rest/v1/rpc/next_durum_ver', {
@@ -535,49 +533,47 @@ function cizDegerlendirme(){
 
   const biten = liste.filter(k => puanTamam(benimPuan(k.id))).length;
   const kalan = liste.length - biten;
-  const basla = !biten ? 'Sırayla izle ve puanla' : kalan ? 'Kaldığın yerden devam et' : 'Baştan gözden geçir';
+  const basla = !biten ? 'Sırayla izle ve karar ver' : kalan ? 'Kaldığın yerden devam et' : 'Baştan gözden geçir';
 
   el('icerik').innerHTML =
-    `<div class="uyari jo-bas"><span>Toplam <b>${liste.length}</b> aday · puanı tamamlanan: <b>${biten}</b> · kalan: <b>${kalan}</b></span>
+    `<div class="uyari jo-bas"><span>Toplam <b>${liste.length}</b> aday · karar verilen: <b>${biten}</b> · kalan: <b>${kalan}</b></span>
       <button class="btn btn-sm btn-kirmizi" id="juriBasla">▶ ${basla}</button></div>` +
     liste.map(kartJuri).join('');
 
   el('juriBasla').addEventListener('click', () => {
     const ids = liste.map(k => k.id);
-    st.oynat = { ids, i: Math.max(0, ids.findIndex(id => !puanTamam(benimPuan(id)))), olcut: 0 };
+    st.oynat = { ids, i: Math.max(0, ids.findIndex(id => !puanTamam(benimPuan(id)))) };
     ciz(); scrollTo(0, 0);
   });
 
-  el('icerik').querySelectorAll('.pt').forEach(b =>
+  el('icerik').querySelectorAll('[data-karar]').forEach(b =>
     b.addEventListener('click', () => {
-      const sar = b.closest('.puan-satir');
-      sar.querySelectorAll('.pt').forEach(x => x.classList.toggle('secili', x === b));
-      sar.dataset.deger = b.dataset.p;
+      const kart = b.closest('.kart');
+      kart.querySelectorAll('[data-karar]').forEach(x => x.classList.toggle('secili', x === b));
+      kart.dataset.karar = b.dataset.karar;
     }));
 
   el('icerik').querySelectorAll('[data-kaydet]').forEach(b =>
     b.addEventListener('click', () => puanKaydet(b.dataset.kaydet, b)));
 }
 
+const kararRozet = karar => karar
+  ? `<span class="durum ${karar === 'gecti' ? 'gecti' : 'elendi'}">${KARAR_AD[karar]}</span>` : '';
+
+const kararTuslari = (p, kisayol) => `<div class="oyn-oy iki">${KARARLAR.map(([id, ad], j) =>
+  `<button type="button" class="btn ${id} ${p.karar === id ? 'secili' : ''}" data-karar="${id}">${ad}${kisayol ? `<kbd>${j + 1}</kbd>` : ''}</button>`).join('')}</div>`;
+
 function kartJuri(k){
-  const p = st.puanlar.find(x => x.basvuru_id === k.id && x.juri_uid === st.uid) || {};
-  const verildi = OLCUTLER.some(([a]) => p[a] != null);
+  const p = benimPuan(k.id) || {};
 
-  const satirlar = OLCUTLER.map(([anahtar, ad]) => `
-    <div class="puan-satir" data-olcut="${anahtar}" data-deger="${p[anahtar] ?? ''}">
-      <span class="puan-ad">${ad}</span>
-      <span class="puan-tus">${[...Array(10)].map((_,i) =>
-        `<button type="button" class="pt ${p[anahtar]==i+1?'secili':''}" data-p="${i+1}">${i+1}</button>`).join('')}</span>
-    </div>`).join('');
-
-  return `<div class="kart" data-kart="${k.id}">
+  return `<div class="kart" data-kart="${k.id}" data-karar="${p.karar || ''}">
     <div class="kart-bas">
       <div class="no">${String(k.sira_no).padStart(3,'0')}</div>
       <div>
         <div class="kart-ad">${kacar(k.ad)}</div>
         <div class="kart-alt">${kacar(k.sehir)} · ${kacar(k.program_adi)}</div>
       </div>
-      <div class="kart-sag">${puanTamam(p) ? '<span class="durum gecti">Puanladınız</span>' : verildi ? '<span class="durum kararsiz">Eksik puan</span>' : ''}</div>
+      <div class="kart-sag">${kararRozet(p.karar)}</div>
     </div>
 
     <div class="kart-govde">
@@ -586,7 +582,7 @@ function kartJuri(k){
           <div class="etkt">Kendini nasıl anlatıyor</div>
           <p>${kacar(k.tanitim)}</p>
         </div>
-        <div class="puan-izgara">${satirlar}</div>
+        <div style="margin-bottom:14px">${kararTuslari(p, false)}</div>
         <div class="alan" style="margin-bottom:0">
           <label>Notunuz <span style="text-transform:none;letter-spacing:0;font-weight:400">— isteğe bağlı</span></label>
           <textarea rows="2" data-not>${kacar(p.notlar || '')}</textarea>
@@ -596,7 +592,7 @@ function kartJuri(k){
     </div>
 
     <div class="kart-ayak">
-      <button class="btn btn-sm btn-kirmizi" data-kaydet="${k.id}">${verildi ? 'Güncelle' : 'Puanı kaydet'}</button>
+      <button class="btn btn-sm btn-kirmizi" data-kaydet="${k.id}">${p.karar ? 'Güncelle' : 'Kararı kaydet'}</button>
       <span class="onay-iz" data-iz="${k.id}"></span>
     </div>
   </div>`;
@@ -605,24 +601,16 @@ function kartJuri(k){
 async function puanKaydet(id, btn){
   const kart = el('icerik').querySelector(`[data-kart="${id}"]`);
   const iz   = kart.querySelector('[data-iz]');
-  const kayit = { basvuru_id: id, juri_uid: st.uid,
+  const karar = kart.dataset.karar;
+  if (!karar){ iz.textContent = 'Önce Geçti ya da Geçmedi seçin.'; return; }
+
+  const kayit = { basvuru_id: id, juri_uid: st.uid, karar,
                   notlar: kart.querySelector('[data-not]').value.trim() || null };
-
-  let eksik = 0;
-  kart.querySelectorAll('.puan-satir').forEach(s => {
-    const d = s.dataset.deger;
-    if (d === '' || d == null) eksik++;
-    kayit[s.dataset.olcut] = d === '' || d == null ? null : Number(d);
-  });
-
-  if (eksik === OLCUTLER.length){
-    iz.textContent = 'Önce puan verin.'; return;
-  }
 
   btn.disabled = true; iz.textContent = 'Kaydediliyor…';
   /* on_conflict şart: PostgREST birleştirmeyi varsayılan olarak birincil anahtara
      göre yapıyor, o da her seferinde yeni satır demek. Aday+jüri çifti üzerinden
-     birleştirilmezse jüri puanını her güncelleyişinde çakışma hatası alıyor. */
+     birleştirilmezse jüri kararını her güncelleyişinde çakışma hatası alıyor. */
   const c = await istek('/rest/v1/fenomen_next_puanlar?on_conflict=basvuru_id,juri_uid', {
     method:'POST',
     headers:{ 'Prefer':'resolution=merge-duplicates,return=representation' },
@@ -635,21 +623,19 @@ async function puanKaydet(id, btn){
   const i = st.puanlar.findIndex(p => p.basvuru_id === id && p.juri_uid === st.uid);
   if (i >= 0) st.puanlar[i] = yeni; else st.puanlar.push(yeni);
 
-  iz.textContent = eksik ? `Kaydedildi — ${eksik} ölçüt boş.` : 'Kaydedildi ✓';
+  iz.textContent = 'Kaydedildi ✓';
   btn.textContent = 'Güncelle';
-  kart.querySelector('.kart-sag').innerHTML = eksik
-    ? '<span class="durum kararsiz">Eksik puan</span>'
-    : '<span class="durum gecti">Puanladınız</span>';
+  kart.querySelector('.kart-sag').innerHTML = kararRozet(karar);
 }
 
-/* ---------- SIRAYLA İZLE VE PUANLA (jüri) ----------
-   Video çalarken puan verilir, her puan kendiliğinden kaydedilir.
-   Kayıtlar tek sırayla gider: yavaş kalan eski istek yeni puanı ezmesin. */
+/* ---------- SIRAYLA İZLE VE KARAR VER (jüri) ----------
+   Video çalarken karar verilir, her karar kendiliğinden kaydedilir.
+   Kayıtlar tek sırayla gider: yavaş kalan eski istek yeni kararı ezmesin. */
 const kirli = new Set();
 let kayitSuruyor = null, kayitHata = false, kayitZaman = null;
 
 const benimPuan = id => st.puanlar.find(p => p.basvuru_id === id && p.juri_uid === st.uid);
-const puanTamam = p => !!p && OLCUTLER.every(([a]) => p[a] != null);
+const puanTamam = p => !!p && !!p.karar;
 
 function juriKaydet(){
   clearTimeout(kayitZaman);
@@ -661,8 +647,8 @@ function juriKaydet(){
         kirli.delete(id);
         const p = benimPuan(id);
         if (!p) continue;
-        const kayit = { basvuru_id: id, juri_uid: st.uid, notlar: (p.notlar || '').trim() || null };
-        OLCUTLER.forEach(([a]) => { kayit[a] = p[a] ?? null; });
+        const kayit = { basvuru_id: id, juri_uid: st.uid, karar: p.karar || null,
+                        notlar: (p.notlar || '').trim() || null };
 
         let tamam = false;
         try {
@@ -705,21 +691,11 @@ function juriDurum(){
     ? `<span class="jo-hata">Kaydedilemedi.</span> <a href="#" data-oyn="kaydet">Tekrar dene</a>`
     : kirli.size || kayitSuruyor ? 'Kaydediliyor…'
     : tamam ? 'Kaydedildi ✓ · <kbd>→</kbd> sonraki aday'
-    : p ? 'Kaydedildi ✓' : 'Puanlar otomatik kaydedilir.';
+    : p ? 'Kaydedildi ✓' : 'Kararın otomatik kaydedilir.';
   const s = el('joSonraki');
   if (s) s.classList.toggle('btn-kirmizi', tamam);
   const say = el('joTamam');
   if (say) say.textContent = st.oynat.ids.filter(x => puanTamam(benimPuan(x))).length;
-}
-
-function juriSatirlar(k){
-  const p = benimPuan(k.id) || {};
-  return OLCUTLER.map(([a, ad], j) => `
-    <div class="jo-satir ${j === st.oynat.olcut ? 'aktif' : ''}" data-olcutno="${j}">
-      <div class="jo-ad"><span>${ad}</span><b>${p[a] ?? '—'}</b></div>
-      <div class="jo-tus">${[...Array(10)].map((_, n) =>
-        `<button type="button" class="pt ${p[a] === n + 1 ? 'secili' : ''}" data-jp="${n + 1}" data-j="${j}">${n + 1}</button>`).join('')}</div>
-    </div>`).join('');
 }
 
 function cizJuriOynat(){
@@ -727,18 +703,18 @@ function cizJuriOynat(){
   const biten = o.ids.filter(id => puanTamam(benimPuan(id))).length;
   const ust = sayac => `<div class="oyn-ust">
       <button class="btn btn-sm" data-oyn="kapat">← Listeye dön</button>
-      <span class="oyn-sayac">${sayac} <small>· tamamlanan <span id="joTamam">${biten}</span></small></span>
-      <span class="oyn-ipucu"><kbd>1</kbd>–<kbd>9</kbd> puan · <kbd>0</kbd> = 10 · <kbd>↑</kbd> <kbd>↓</kbd> ölçüt · <kbd>←</kbd> <kbd>→</kbd> aday · <kbd>Esc</kbd> liste</span>
+      <span class="oyn-sayac">${sayac} <small>· karar verilen <span id="joTamam">${biten}</span></small></span>
+      <span class="oyn-ipucu"><kbd>1</kbd> geçti · <kbd>2</kbd> geçmedi · <kbd>←</kbd> <kbd>→</kbd> aday · <kbd>Esc</kbd> liste</span>
     </div>`;
 
   if (o.i >= n){
     const ilkEksik = o.ids.findIndex(id => !puanTamam(benimPuan(id)));
     el('icerik').innerHTML = ust(`${n} / ${n}`) + `<div class="bos">
-        ${ilkEksik < 0 ? 'Bütün adayları puanladın, teşekkürler.' : 'Listenin sonuna geldin.'}<br>
-        <span style="font-size:13.5px">Tamamlanan ${biten} · Eksik ${n - biten}</span><br>
+        ${ilkEksik < 0 ? 'Bütün adaylara karar verdin, teşekkürler.' : 'Listenin sonuna geldin.'}<br>
+        <span style="font-size:13.5px">Karar verilen ${biten} · Bekleyen ${n - biten}</span><br>
         <span id="joKayit" style="font-size:13px"></span><br><br>
         <button class="btn btn-sm" data-oyn="onceki">← Son adaya dön</button>
-        ${ilkEksik >= 0 ? `<button class="btn btn-sm btn-kirmizi" data-oyn="eksik">İlk eksik adaya git</button>` : ''}
+        ${ilkEksik >= 0 ? `<button class="btn btn-sm btn-kirmizi" data-oyn="eksik">Karar verilmemiş ilk adaya git</button>` : ''}
         <button class="btn btn-sm btn-koyu" data-oyn="kapat">Listeye dön</button>
       </div>`;
     juriBagla(null);
@@ -748,7 +724,6 @@ function cizJuriOynat(){
 
   const k = st.basvurular.find(x => x.id === o.ids[o.i]);
   const p = benimPuan(k.id) || {};
-  o.olcut = Math.max(0, OLCUTLER.findIndex(([a]) => p[a] == null));
 
   el('icerik').innerHTML = ust(`${o.i + 1} <small>/ ${n}</small>`) + `
     <div class="oyn oyn-juri">
@@ -777,7 +752,7 @@ function cizJuriOynat(){
           </div>
         </div>
         <details class="jo-tanitim"><summary>Kendini nasıl anlatıyor</summary><p>${kacar(k.tanitim)}</p></details>
-        <div id="joPuan">${juriSatirlar(k)}</div>
+        <div id="joPuan">${kararTuslari(p, true)}</div>
       </div>
     </div>`;
   juriBagla(k);
@@ -786,17 +761,16 @@ function cizJuriOynat(){
 
 function juriBagla(k){
   el('icerik').onclick = ev => {
-    const b = ev.target.closest('[data-jp],[data-oyn],[data-olcutno]');
+    const b = ev.target.closest('[data-karar],[data-oyn]');
     if (!b || !st.oynat) return;
     if (b.tagName === 'A') ev.preventDefault();
-    if (b.dataset.jp && k) puanVer(k, +b.dataset.j, +b.dataset.jp);
+    if (b.dataset.karar && k) kararVer(k, b.dataset.karar);
     else if (b.dataset.oyn === 'kaydet') juriKaydet();
     else if (b.dataset.oyn === 'eksik'){
       st.oynat.i = st.oynat.ids.findIndex(id => !puanTamam(benimPuan(id)));
       ciz();
     }
     else if (b.dataset.oyn) oynatGit(b.dataset.oyn);
-    else if (k){ st.oynat.olcut = +b.dataset.olcutno; el('joPuan').innerHTML = juriSatirlar(k); }
   };
   const not = el('joNot');
   if (not && k) not.addEventListener('input', () => {
@@ -805,14 +779,10 @@ function juriBagla(k){
   });
 }
 
-/* Puan verince imleç sıradaki boş ölçüte geçer; video yeniden yüklenmez. */
-function puanVer(k, j, deger){
-  const p = benimSatir(k.id);
-  p[OLCUTLER[j][0]] = deger;
-  const bos = s => OLCUTLER.findIndex(([a], i) => i >= s && p[a] == null);
-  const sonraki = bos(j + 1) >= 0 ? bos(j + 1) : bos(0);
-  st.oynat.olcut = sonraki >= 0 ? sonraki : j;
-  el('joPuan').innerHTML = juriSatirlar(k);
+/* Karar verince yalnız düğmeler yenilenir; video yeniden yüklenmez. */
+function kararVer(k, karar){
+  benimSatir(k.id).karar = karar;
+  el('joPuan').innerHTML = kararTuslari(benimPuan(k.id), true);
   puanKirlet(k.id, 300);
 }
 
@@ -822,17 +792,13 @@ function juriTus(ev){
 
   const o = st.oynat;
   const k = st.basvurular.find(x => x.id === o.ids[o.i]);
-  const deger = ev.key === '0' ? 10 : /^[1-9]$/.test(ev.key) ? +ev.key : 0;
+  const karar = { '1':'gecti', '2':'gecmedi' }[ev.key];
 
   if (ev.key === 'ArrowRight')     oynatGit('sonraki');
   else if (ev.key === 'ArrowLeft') oynatGit('onceki');
   else if (ev.key === 'Escape')    oynatGit('kapat');
   else if (!k) return;
-  else if (deger){ if (!ev.repeat) puanVer(k, o.olcut, deger); }
-  else if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp'){
-    o.olcut = Math.min(OLCUTLER.length - 1, Math.max(0, o.olcut + (ev.key === 'ArrowDown' ? 1 : -1)));
-    el('joPuan').innerHTML = juriSatirlar(k);
-  }
+  else if (karar){ if (!ev.repeat) kararVer(k, karar); }
   else return;
   ev.preventDefault();
 }
@@ -858,55 +824,49 @@ function cizSonuc(){
   const juriler = st.yetkililer.filter(y => y.rol === 'juri')
     .sort((a,b) => (a.ad || a.eposta).localeCompare(b.ad || b.eposta, 'tr'));
   const juriAd = j => kacar(j.ad || j.eposta);
-  const juriOrt = x => OLCUTLER.reduce((t,[a]) => t + x[a], 0) / OLCUTLER.length;
 
   const satirlar = adaylar.map(k => {
     const p = st.puanlar.filter(x => x.basvuru_id === k.id && juriler.some(j => j.uid === x.juri_uid));
-    /* Puanlar otomatik kaydedildiği için yarım kalan oylama sıralamaya girmez. */
-    const ortalamalar = p.filter(puanTamam).map(juriOrt);
-    const ort = ortalamalar.length
-      ? ortalamalar.reduce((t,v) => t+v, 0) / ortalamalar.length : null;
-    const fark = ortalamalar.length > 1
-      ? Math.max(...ortalamalar) - Math.min(...ortalamalar) : 0;
+    const gecti   = p.filter(x => x.karar === 'gecti').length;
+    const gecmedi = p.filter(x => x.karar === 'gecmedi').length;
+    return { k, p, gecti, gecmedi, adet: gecti + gecmedi };
+  });
+  /* Çok "Geçti" alan üstte; eşitlikte oy almış olan, sonra az "Geçmedi" alan önde. */
+  satirlar.sort((a,b) => b.gecti - a.gecti || (b.adet > 0) - (a.adet > 0) || a.gecmedi - b.gecmedi || a.k.sira_no - b.k.sira_no);
 
-    return { k, p, adet: ortalamalar.length, ort, fark };
-  }).sort((a,b) => (b.ort ?? -1) - (a.ort ?? -1) || b.adet - a.adet || a.k.sira_no - b.k.sira_no);
-
-  /* Ortalaması eşit olanlar aynı sırayı paylaşır. */
+  /* Oyları aynı olanlar aynı sırayı paylaşır. */
   satirlar.forEach((s, i) => {
     const o = satirlar[i - 1];
-    s.sira = s.ort == null ? null : o && Math.abs(o.ort - s.ort) < 1e-9 ? o.sira : i + 1;
+    s.sira = !s.adet ? null : o && o.gecti === s.gecti && o.gecmedi === s.gecmedi ? o.sira : i + 1;
   });
 
   const hucre = (s, j) => {
     const x = s.p.find(v => v.juri_uid === j.uid);
-    if (!x || !OLCUTLER.some(([a]) => x[a] != null)) return '<span class="sn-yok">—</span>';
-    return puanTamam(x) ? `<b>${juriOrt(x).toFixed(1)}</b>` : '<span class="sn-yarim">yarım</span>';
+    return x && x.karar ? `<b class="sn-${x.karar}">${KARAR_AD[x.karar]}</b>` : '<span class="sn-yok">—</span>';
   };
 
   const detay = s => `<table class="sn-detay">
-      <thead><tr><th>Jüri</th>${OLCUTLER.map(([,ad]) => `<th class="sayi">${ad}</th>`).join('')}<th class="sayi">Ort.</th><th>Not</th></tr></thead>
+      <thead><tr><th>Jüri</th><th>Karar</th><th>Not</th></tr></thead>
       <tbody>${juriler.map(j => {
         const x = s.p.find(v => v.juri_uid === j.uid) || {};
         return `<tr><td>${juriAd(j)}</td>
-          ${OLCUTLER.map(([a]) => `<td class="sayi">${x[a] ?? '—'}</td>`).join('')}
-          <td class="sayi"><b>${puanTamam(x) ? juriOrt(x).toFixed(1) : '—'}</b></td>
+          <td>${x.karar ? `<b class="sn-${x.karar}">${KARAR_AD[x.karar]}</b>` : '—'}</td>
           <td class="sn-not">${kacar(x.notlar || '')}</td></tr>`;
       }).join('')}</tbody>
     </table>`;
 
   el('icerik').innerHTML = grupTus + `
-    <div class="uyari jo-bas"><span>Ortalamaya göre sıralı. Altı ölçütü tamamlanmamış puan ortalamaya girmez. <b>Ayrışma</b>, jürinin en yüksek ve en düşük puanı arasındaki farktır.</span>
+    <div class="uyari jo-bas"><span>"Geçti" oyu sayısına göre sıralı. Eşitlikte daha az "Geçmedi" alan üstte.</span>
       <button class="btn btn-sm" id="sonucYenile">↻ Yenile</button></div>
     <div class="tablo-sar"><table class="sn-tablo">
       <thead>
         <tr>
           <th class="sn-aday">Sıra · Aday</th>
           ${juriler.map(j => `<th class="sayi sn-juri">${juriAd(j)}</th>`).join('')}
-          <th class="sayi">Puanlayan</th><th class="sayi">Ortalama</th><th class="sayi">Ayrışma</th><th></th>
+          <th class="sayi">Geçti</th><th class="sayi">Geçmedi</th><th class="sayi">Oy veren</th><th></th>
         </tr>
         <tr class="sn-ilerleme">
-          <td class="sn-aday">Tamamladığı aday</td>
+          <td class="sn-aday">Karar verdiği aday</td>
           ${juriler.map(j => `<td class="sayi">${adaylar.filter(k => puanTamam(st.puanlar.find(x => x.basvuru_id === k.id && x.juri_uid === j.uid))).length}/${adaylar.length}</td>`).join('')}
           <td colspan="4"></td>
         </tr>
@@ -915,10 +875,10 @@ function cizSonuc(){
         <td class="sn-aday"><span class="sn-sira">${s.sira ?? '—'}</span><b>${kacar(s.k.ad)}</b>
           <small>${String(s.k.sira_no).padStart(3,'0')} · ${kacar(s.k.program_adi)}</small></td>
         ${juriler.map(j => `<td class="sayi">${hucre(s, j)}</td>`).join('')}
+        <td class="sayi"><b class="sn-gecti">${s.gecti}</b></td>
+        <td class="sayi">${s.gecmedi}</td>
         <td class="sayi">${s.adet}/${juriler.length}</td>
-        <td class="sayi"><b>${s.ort != null ? s.ort.toFixed(2) : '—'}</b></td>
-        <td class="sayi">${s.adet > 1 ? s.fark.toFixed(1) : '—'}</td>
-        <td><button class="btn btn-sm btn-koyu" data-detay="${s.k.id}">Ölçütler</button></td>
+        <td><button class="btn btn-sm btn-koyu" data-detay="${s.k.id}">Notlar</button></td>
       </tr>
       <tr class="gizli" id="det-${s.k.id}"><td colspan="${juriler.length + 5}">${detay(s)}</td></tr>`).join('')}</tbody>
     </table></div>`;
@@ -1005,7 +965,7 @@ async function sifreYenile(uid){
 }
 
 async function kisiSil(uid, ad){
-  if (!confirm(`${ad} silinsin mi? Bu kişi panele giremeyecek. Verdiği puanlar da silinir.`)) return;
+  if (!confirm(`${ad} silinsin mi? Bu kişi panele giremeyecek. Verdiği oylar da silinir.`)) return;
   const c = await istek('/functions/v1/next-yetkili', {
     method:'POST', body: JSON.stringify({ islem:'sil', uid })
   });
